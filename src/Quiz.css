@@ -1,0 +1,402 @@
+.quiz-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  color: #172033;
+}
+
+/* Header */
+
+.quiz-header {
+  position: relative;
+  background: white;
+  border-bottom: 1px solid #e8eaf0;
+  padding: 22px 6%;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quiz-header > div:nth-child(2) {
+  text-align: center;
+}
+
+.quiz-header h1 {
+  font-size: 25px;
+  margin: 0 0 5px;
+  color: #172033;
+}
+
+.quiz-header p {
+  color: #6b7280;
+  font-size: 13px;
+  margin: 0;
+}
+
+.quiz-header .back-btn {
+  position: absolute;
+  left: 6%;
+  top: 30px;
+  border: none;
+  background: transparent;
+  color: #5b5bf7;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.quiz-header .back-btn:hover {
+  color: #4545d8;
+}
+
+.quiz-count {
+  position: absolute;
+  right: 6%;
+  top: 30px;
+  background: #eeeeff;
+  color: #5b5bf7;
+  padding: 8px 13px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Main */
+
+.quiz-main {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* Progress */
+
+.progress-bar {
+  height: 8px;
+  background: #e5e7ed;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 25px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #5b5bf7;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+/* Question Card */
+
+.question-card {
+  background: white;
+  border: 1px solid #e8eaf0;
+  border-radius: 16px;
+  padding: 35px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+}
+
+.question-number {
+  color: #5b5bf7;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.question-card h2 {
+  color: #172033;
+  font-size: 22px;
+  line-height: 1.5;
+  margin: 15px 0 25px;
+}
+
+/* Quiz Setup */
+
+.quiz-setting {
+  margin-bottom: 22px;
+}
+
+.quiz-setting label {
+  display: block;
+  color: #172033;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 9px;
+}
+
+.quiz-setting select {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #dfe2e9;
+  border-radius: 10px;
+  background: white;
+  color: #172033;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.quiz-setting select:hover {
+  border-color: #5b5bf7;
+}
+
+.quiz-setting select:focus {
+  border-color: #5b5bf7;
+  box-shadow: 0 0 0 3px rgba(91, 91, 247, 0.1);
+}
+
+/* Options */
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option {
+  width: 100%;
+  padding: 15px 18px;
+  border: 1px solid #e0e3ea;
+  background: white;
+  border-radius: 10px;
+  text-align: left;
+  color: #172033;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.option:hover {
+  border-color: #5b5bf7;
+  background: #f7f7ff;
+}
+
+.option.selected {
+  border-color: #5b5bf7;
+  background: #eeeeff;
+  color: #4d4dd8;
+  font-weight: 600;
+}
+
+/* Next Button */
+
+.next-btn {
+  width: 100%;
+  margin-top: 25px;
+  border: none;
+  background: #5b5bf7;
+  color: white;
+  padding: 13px;
+  border-radius: 9px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.next-btn:hover:not(:disabled) {
+  background: #4d4ddd;
+  transform: translateY(-1px);
+}
+
+.next-btn:disabled {
+  background: #c7c9d5;
+  cursor: not-allowed;
+}
+
+/* Result */
+
+.quiz-result {
+  width: min(500px, 90%);
+  margin: 100px auto;
+  background: white;
+  border: 1px solid #e8eaf0;
+  border-radius: 18px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.result-icon {
+  font-size: 55px;
+  margin-bottom: 15px;
+}
+
+.quiz-result h1 {
+  color: #172033;
+  margin-bottom: 8px;
+}
+
+.quiz-result > p {
+  color: #858c9b;
+}
+
+.score-box {
+  margin: 30px auto;
+  background: #eeeeff;
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.score-box strong,
+.score-box span {
+  display: block;
+}
+
+.score-box strong {
+  font-size: 35px;
+  color: #5b5bf7;
+}
+
+.score-box span {
+  margin-top: 5px;
+  color: #858c9b;
+  font-size: 13px;
+}
+
+.result-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.result-buttons button {
+  border: none;
+  background: #5b5bf7;
+  color: white;
+  padding: 11px 17px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.result-buttons button:hover {
+  background: #4d4ddd;
+}
+
+.result-buttons .back-result {
+  background: #eef0f4;
+  color: #4b5260;
+}
+
+.result-buttons .back-result:hover {
+  background: #e2e5eb;
+}
+
+/* Text */
+
+.quiz-header h1,
+.quiz-header p,
+.question-card h2,
+.question-card h3,
+.question-text,
+.question-card .question {
+  opacity: 1;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+  .quiz-header {
+    padding: 18px;
+    min-height: 110px;
+  }
+
+  .quiz-header .back-btn {
+    left: 18px;
+    top: 18px;
+    font-size: 12px;
+  }
+
+  .quiz-header .quiz-count {
+    right: 18px;
+    top: 18px;
+    font-size: 11px;
+    padding: 6px 9px;
+  }
+
+  .quiz-header h1 {
+    font-size: 20px;
+    margin-top: 28px;
+  }
+
+  .quiz-header p {
+    font-size: 11px;
+  }
+
+  .quiz-main {
+    margin: 25px auto;
+    padding: 0 15px;
+  }
+
+  .question-card {
+    padding: 25px 18px;
+  }
+
+  .question-card h2 {
+    font-size: 18px;
+  }
+
+  .option {
+    padding: 13px 14px;
+    font-size: 13px;
+  }
+
+  .quiz-setting select {
+    padding: 12px;
+  }
+
+  .result-buttons {
+    flex-direction: column;
+  }
+
+  .quiz-result {
+    margin: 60px auto;
+    padding: 30px 20px;
+  }
+}
+/* ============================= */
+/* A B C D Option Labels */
+/* ============================= */
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.option-label {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dfe2ea;
+  border-radius: 50%;
+
+  background: #f7f8fc;
+  color: #5b5bf7;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  transition: 0.2s ease;
+}
+
+.option-text {
+  flex: 1;
+}
+
+.option:hover .option-label {
+  background: #eeeeff;
+  border-color: #5b5bf7;
+}
+
+.option.selected .option-label {
+  background: #5b5bf7;
+  border-color: #5b5bf7;
+  color: white;
+}

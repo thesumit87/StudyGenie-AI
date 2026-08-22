@@ -1,0 +1,134 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f7f8ff, #eef1ff);
+  padding: 30px;
+}
+
+.login-card {
+  width: 420px;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(40, 50, 100, 0.12);
+  position: relative;
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  border: none;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.login-logo {
+  width: 65px;
+  height: 65px;
+  display: grid;
+  place-items: center;
+  margin: 15px auto 20px;
+  background: #eeeeff;
+  border-radius: 18px;
+  font-size: 32px;
+}
+
+.login-card h1 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.login-card > p {
+  text-align: center;
+  color: #7b8190;
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #dfe2e8;
+  border-radius: 9px;
+  outline: none;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  border-color: #5b5bf7;
+  box-shadow: 0 0 0 3px rgba(91, 91, 247, 0.1);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 9px;
+  background: #5b5bf7;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.submit-btn:hover {
+  background: #4949df;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 25px 0;
+  color: #aaa;
+  font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e5e5;
+}
+
+.google-btn {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.switch-text {
+  margin-top: 25px !important;
+  margin-bottom: 0 !important;
+}
+
+.switch-btn {
+  border: none;
+  background: transparent;
+  color: #5b5bf7;
+  font-weight: 600;
+  cursor: pointer;
+}

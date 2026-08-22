@@ -1,0 +1,277 @@
+.progress-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  color: #172033;
+}
+
+.progress-header {
+  position: relative;
+  background: white;
+  border-bottom: 1px solid #e8eaf0;
+  padding: 22px 6%;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-header > div {
+  text-align: center;
+}
+
+.progress-header h1 {
+  color: #172033;
+  font-size: 25px;
+  margin-bottom: 5px;
+}
+
+.progress-header p {
+  color: #858c9b;
+  font-size: 13px;
+}
+
+.back-btn {
+  position: absolute;
+  left: 6%;
+  top: 30px;
+  border: none;
+  background: transparent;
+  color: #5b5bf7;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.progress-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 35px 25px;
+}
+
+.progress-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 35px;
+}
+
+.progress-card {
+  background: white;
+  border: 1px solid #e8eaf0;
+  border-radius: 13px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.progress-card > span {
+  font-size: 28px;
+}
+
+.progress-card h3 {
+  font-size: 22px;
+  color: #172033;
+}
+
+.progress-card p {
+  color: #858c9b;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.progress-section {
+  margin-bottom: 35px;
+}
+
+.section-title {
+  margin-bottom: 18px;
+}
+
+.section-title h2 {
+  color: #172033;
+  font-size: 21px;
+}
+
+.section-title p {
+  color: #858c9b;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* Weekly Progress */
+
+.weekly-card {
+  height: 300px;
+  background: white;
+  border: 1px solid #e8eaf0;
+  border-radius: 14px;
+  padding: 25px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+}
+
+.day {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.day > span {
+  color: #777f90;
+  font-size: 12px;
+}
+
+.day small {
+  color: #5b5bf7;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.bar {
+  width: 35px;
+  height: 190px;
+  background: #eeeeff;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.bar div {
+  width: 100%;
+  background: #5b5bf7;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Subjects */
+
+.subjects {
+  background: white;
+  border: 1px solid #e8eaf0;
+  border-radius: 14px;
+  padding: 25px;
+}
+
+.subject {
+  margin-bottom: 22px;
+}
+
+.subject:last-child {
+  margin-bottom: 0;
+}
+
+.subject-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.subject-info strong {
+  color: #172033;
+}
+
+.subject-info span {
+  color: #5b5bf7;
+  font-weight: 600;
+}
+
+.subject-bar {
+  height: 9px;
+  background: #eeeeff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.subject-bar div {
+  height: 100%;
+  background: #5b5bf7;
+  border-radius: 10px;
+}
+
+/* Quiz Results */
+
+.quiz-results {
+  background: white;
+  border: 1px solid #e8eaf0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.quiz-result-row {
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eef0f4;
+}
+
+.quiz-result-row:last-child {
+  border-bottom: none;
+}
+
+.quiz-result-row strong {
+  color: #172033;
+  font-size: 14px;
+}
+
+.quiz-result-row p {
+  color: #858c9b;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.quiz-result-row > span {
+  color: #16a34a;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .progress-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .progress-header {
+    padding: 18px;
+    min-height: 120px;
+  }
+
+  .progress-header .back-btn {
+    left: 18px;
+    top: 18px;
+  }
+
+  .progress-header > div {
+    width: 100%;
+    text-align: center;
+    padding-top: 20px;
+  }
+
+  .progress-main {
+    padding: 25px 15px;
+  }
+
+  .progress-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-card {
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 25px;
+  }
+
+  .day {
+    min-width: 45px;
+  }
+}
