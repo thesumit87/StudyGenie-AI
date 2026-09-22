@@ -26,9 +26,9 @@ if (!GEMINI_API_KEY) {
 const ai = new GoogleGenAI({
   apiKey: GEMINI_API_KEY,
   httpOptions: {
-    timeout: 10000,
+    timeout: 30000,
     retryOptions: {
-      attempts: 1,
+      attempts: 3,
     },
   },
 });
