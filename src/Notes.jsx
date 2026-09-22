@@ -1,40 +1,45 @@
 import { useState } from "react";
 import "./Notes.css";
 
-function Notes({ onBack }) {
+function Notes() {
   const [notes, setNotes] = useState(() => {
     const savedNotes = localStorage.getItem("studygenieNotes");
 
     if (savedNotes) {
-      return JSON.parse(savedNotes);
+      try {
+        return JSON.parse(savedNotes);
+      } catch {
+        return [];
+      }
     }
 
     return [
       {
         id: 1,
+        title: "Computer Networks Basics",
+        subject: "Computer Networks",
+        content:
+          "Computer Network is a group of interconnected computers and devices that communicate and share data and resources. Main components of a computer network include routers, switches and communication protocols.",
+      },
+      {
+        id: 2,
         title: "Java OOP Concepts",
         subject: "Java",
         content:
           "OOP is based on classes and objects. Main concepts are Encapsulation, Inheritance, Polymorphism and Abstraction.",
       },
       {
-        id: 2,
+        id: 3,
         title: "Operating System",
         subject: "Operating System",
         content:
-          "An Operating System manages computer hardware and provides services for applications.",
-      },
-      {
-        id: 3,
-        title: "DBMS Basics",
-        subject: "DBMS",
-        content:
-          "DBMS is software used to store, manage and retrieve data from databases.",
+          "An Operating System manages computer hardware and provides services for applications. It manages memory, processes, files and devices.",
       },
     ];
   });
 
   const [search, setSearch] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("All");
   const [showForm, setShowForm] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
 
@@ -42,12 +47,26 @@ function Notes({ onBack }) {
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
 
+  const subjects = [
+    "All",
+    "Computer Networks",
+    "Java",
+    "Operating System",
+    "DBMS",
+    "DSA",
+    "Web Development",
+  ];
+
   const saveNotes = (updatedNotes) => {
     setNotes(updatedNotes);
 
     localStorage.setItem(
       "studygenieNotes",
       JSON.stringify(updatedNotes)
+    );
+
+    window.dispatchEvent(
+      new Event("studygenie-update")
     );
   };
 
@@ -69,9 +88,7 @@ function Notes({ onBack }) {
       content: content.trim(),
     };
 
-    const updatedNotes = [newNote, ...notes];
-
-    saveNotes(updatedNotes);
+    saveNotes([newNote, ...notes]);
 
     setTitle("");
     setSubject("");
@@ -92,74 +109,176 @@ function Notes({ onBack }) {
   };
 
   const filteredNotes = notes.filter((note) => {
-    const text =
+    const matchesSubject =
+      selectedSubject === "All" ||
+      note.subject === selectedSubject;
+
+    const searchText =
       `${note.title} ${note.subject} ${note.content}`.toLowerCase();
 
-    return text.includes(search.toLowerCase());
+    const matchesSearch =
+      searchText.includes(search.toLowerCase());
+
+    return matchesSubject && matchesSearch;
   });
 
+  const getSubjectIcon = (subjectName) => {
+    if (subjectName === "Computer Networks") {
+      return "🌐";
+    }
+
+    if (subjectName === "Java") {
+      return "☕";
+    }
+
+    if (subjectName === "Operating System") {
+      return "💻";
+    }
+
+    if (subjectName === "DBMS") {
+      return "🗄️";
+    }
+
+    if (subjectName === "DSA") {
+      return "⌘";
+    }
+
+    if (subjectName === "Web Development") {
+      return "</>";
+    }
+
+    return "📘";
+  };
+
+  const getSubjectClass = (subjectName) => {
+    if (subjectName === "Computer Networks") {
+      return "network";
+    }
+
+    if (subjectName === "Java") {
+      return "java";
+    }
+
+    if (subjectName === "Operating System") {
+      return "os";
+    }
+
+    if (subjectName === "DBMS") {
+      return "dbms";
+    }
+
+    if (subjectName === "DSA") {
+      return "dsa";
+    }
+
+    if (subjectName === "Web Development") {
+      return "web";
+    }
+
+    return "default";
+  };
+
   return (
-    <div className="notes-page">
+    <section className="notes-content">
 
-      {/* Header */}
+      <div className="notes-hero">
 
-      <header className="notes-header">
+        <div className="notes-hero-text">
 
-        <button
-          className="back-btn"
-          onClick={onBack}
-        >
-          ← Dashboard
-        </button>
+          <div className="notes-label">
+            STUDY MATERIAL
+          </div>
 
-        <div>
-          <h1>📄 My Notes</h1>
-          <p>Manage your study notes in one place</p>
+          <h1>
+            My <span>Notes</span>
+          </h1>
+
+          <p>
+            Create, organize and manage your study notes
+            in one place.
+          </p>
+
         </div>
 
-      </header>
+        <div className="notes-illustration">
 
-      <main className="notes-main">
+          <div className="book-stack">
 
-        {/* Search + Add */}
+            <div className="book book-blue">
+              📘
+            </div>
 
-        <div className="notes-top">
+            <div className="book book-purple">
+              📕
+            </div>
 
-          <div className="search-box">
-
-            <span>🔍</span>
-
-            <input
-              type="text"
-              placeholder="Search notes..."
-              value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
-            />
+            <div className="book book-orange">
+              📙
+            </div>
 
           </div>
 
-          <button
-            className="add-note-btn"
-            onClick={() =>
-              setShowForm(!showForm)
-            }
-          >
-            {showForm ? "✕ Close" : "+ Add Note"}
-          </button>
+          <div className="future-text">
+            Better
+            <br />
+            Notes
+            <br />
+            <b>Brighter Future</b>
+          </div>
 
         </div>
 
-        {/* Add Note Form */}
+        <button
+          type="button"
+          className="add-note-btn"
+          onClick={() => setShowForm(!showForm)}
+        >
+          {showForm ? "✕ Close" : "+ Add Note"}
+        </button>
 
-        {showForm && (
-          <form
-            className="note-form"
-            onSubmit={addNote}
+      </div>
+
+      <div className="subject-filters">
+
+        {subjects.map((item) => (
+          <button
+            key={item}
+            type="button"
+            className={
+              selectedSubject === item
+                ? "subject-filter active"
+                : "subject-filter"
+            }
+            onClick={() =>
+              setSelectedSubject(item)
+            }
           >
+            <span>
+              {item === "All"
+                ? "▦"
+                : getSubjectIcon(item)}
+            </span>
 
-            <h2>Add New Note</h2>
+            {item}
+          </button>
+        ))}
+
+      </div>
+
+      {showForm && (
+        <form
+          className="note-form"
+          onSubmit={addNote}
+        >
+
+          <div className="form-title">
+            <h2>Create New Note</h2>
+            <p>
+              Add your study material below.
+            </p>
+          </div>
+
+          <div className="form-row">
 
             <input
               type="text"
@@ -168,6 +287,7 @@ function Notes({ onBack }) {
               onChange={(e) =>
                 setTitle(e.target.value)
               }
+              required
             />
 
             <input
@@ -177,68 +297,132 @@ function Notes({ onBack }) {
               onChange={(e) =>
                 setSubject(e.target.value)
               }
+              required
             />
 
-            <textarea
-              placeholder="Write your notes here..."
-              value={content}
-              onChange={(e) =>
-                setContent(e.target.value)
+          </div>
+
+          <textarea
+            placeholder="Write your notes here..."
+            value={content}
+            onChange={(e) =>
+              setContent(e.target.value)
+            }
+            rows="5"
+            required
+          />
+
+          <div className="form-buttons">
+
+            <button
+              type="submit"
+              className="save-note-btn"
+            >
+              Save Note
+            </button>
+
+            <button
+              type="button"
+              className="cancel-note-btn"
+              onClick={() =>
+                setShowForm(false)
               }
-              rows="6"
-            />
+            >
+              Cancel
+            </button>
 
-            <div className="form-buttons">
+          </div>
 
-              <button
-                type="submit"
-                className="save-note-btn"
-              >
-                Save Note
-              </button>
+        </form>
+      )}
 
-              <button
-                type="button"
-                className="cancel-note-btn"
-                onClick={() =>
-                  setShowForm(false)
-                }
-              >
-                Cancel
-              </button>
+      <div className="notes-tools">
 
-            </div>
+        <div className="notes-search">
 
-          </form>
-        )}
+          <span>⌕</span>
 
-        {/* Notes */}
+          <input
+            type="text"
+            placeholder="Search your notes..."
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+          />
 
-        <div className="notes-grid">
+        </div>
 
-          {filteredNotes.length > 0 ? (
+        <div className="notes-tools-right">
 
-            filteredNotes.map((note) => (
+          <button
+            type="button"
+            className="sort-btn"
+          >
+            ↕ Newest First
+            <span>⌄</span>
+          </button>
 
-              <div
-                className="note-card"
+          <div className="view-buttons">
+
+            <button
+              type="button"
+              className="view-active"
+            >
+              ▦
+            </button>
+
+            <button type="button">
+              ☷
+            </button>
+
+          </div>
+
+          <span className="note-total">
+            {filteredNotes.length} Notes
+          </span>
+
+        </div>
+
+      </div>
+
+      <div className="notes-grid">
+
+        {filteredNotes.length > 0 ? (
+          filteredNotes.map((note) => {
+
+            const subjectClass =
+              getSubjectClass(note.subject);
+
+            return (
+              <article
+                className={`note-card ${subjectClass}`}
                 key={note.id}
               >
 
                 <div className="note-card-top">
 
-                  <span className="note-icon">
-                    📘
+                  <div
+                    className={`note-icon ${subjectClass}`}
+                  >
+                    {getSubjectIcon(note.subject)}
+                  </div>
+
+                  <span
+                    className={`note-subject ${subjectClass}`}
+                  >
+                    {note.subject}
                   </span>
 
                   <button
+                    type="button"
                     className="delete-note"
                     onClick={() =>
                       deleteNote(note.id)
                     }
                     title="Delete note"
                   >
-                    🗑️
+                    ⋮
                   </button>
 
                 </div>
@@ -247,57 +431,85 @@ function Notes({ onBack }) {
                   {note.title}
                 </h3>
 
-                <span className="note-subject">
-                  {note.subject}
-                </span>
-
-                {/* Short Note Preview */}
-
                 <p className="note-preview">
-                  {note.content.length > 140
-                    ? note.content.substring(0, 140) + "..."
+                  {note.content.length > 155
+                    ? `${note.content.substring(
+                        0,
+                        155
+                      )}...`
                     : note.content}
                 </p>
 
-                <button
-                  className="open-note-btn"
-                  onClick={() =>
-                    setSelectedNote(note)
-                  }
-                >
-                  Open Note →
-                </button>
+                <div className="note-card-bottom">
 
-              </div>
+                  <span className="note-date">
+                    ◫ Study Note
+                  </span>
 
-            ))
+                  <button
+                    type="button"
+                    className="open-note-btn"
+                    onClick={() =>
+                      setSelectedNote(note)
+                    }
+                  >
+                    Read Note →
+                  </button>
 
-          ) : (
+                </div>
 
-            <div className="no-notes">
+              </article>
+            );
+          })
+        ) : (
+          <div className="no-notes">
 
-              <span>📄</span>
-
-              <h3>
-                No notes found
-              </h3>
-
-              <p>
-                Try another search or create a new note.
-              </p>
-
+            <div className="empty-note-icon">
+              🔍
             </div>
 
-          )}
+            <h3>
+              No notes found
+            </h3>
+
+            <p>
+              Try another subject or search term.
+            </p>
+
+          </div>
+        )}
+
+      </div>
+
+      <div className="notes-reminder">
+
+        <div className="reminder-icon">
+          ✦
+        </div>
+
+        <div className="reminder-text">
+
+          <h3>
+            Keep your notes organized!
+          </h3>
+
+          <p>
+            Well-organized notes help you revise faster
+            and remember better.
+          </p>
 
         </div>
 
-      </main>
+        <button
+          type="button"
+          onClick={() => setShowForm(true)}
+        >
+          Create a new note →
+        </button>
 
-      {/* Full Note Viewer */}
+      </div>
 
       {selectedNote && (
-
         <div
           className="note-viewer-overlay"
           onClick={() =>
@@ -314,27 +526,32 @@ function Notes({ onBack }) {
 
             <div className="note-viewer-header">
 
-              <div>
+              <div className="viewer-title">
 
-                <span className="viewer-icon">
-                  📘
-                </span>
+                <div className="viewer-icon">
+                  {getSubjectIcon(
+                    selectedNote.subject
+                  )}
+                </div>
 
                 <div>
-
                   <h2>
                     {selectedNote.title}
                   </h2>
 
-                  <span className="note-subject">
+                  <span
+                    className={`note-subject ${getSubjectClass(
+                      selectedNote.subject
+                    )}`}
+                  >
                     {selectedNote.subject}
                   </span>
-
                 </div>
 
               </div>
 
               <button
+                type="button"
                 className="close-viewer"
                 onClick={() =>
                   setSelectedNote(null)
@@ -346,16 +563,15 @@ function Notes({ onBack }) {
             </div>
 
             <div className="note-viewer-content">
-
               <p>
                 {selectedNote.content}
               </p>
-
             </div>
 
             <div className="note-viewer-footer">
 
               <button
+                type="button"
                 className="close-note-btn"
                 onClick={() =>
                   setSelectedNote(null)
@@ -369,10 +585,9 @@ function Notes({ onBack }) {
           </div>
 
         </div>
-
       )}
 
-    </div>
+    </section>
   );
 }
 

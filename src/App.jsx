@@ -18,43 +18,28 @@ function App() {
   const [showProgress, setShowProgress] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
-  // AI Assistant
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   if (showAI) {
-    return (
-      <AIAssistant
-        onBack={() => setShowAI(false)}
-      />
-    );
+    return <AIAssistant onBack={() => setShowAI(false)} />;
   }
 
-  // Notes
   if (showNotes) {
-    return (
-      <Notes
-        onBack={() => setShowNotes(false)}
-      />
-    );
+    return <Notes onBack={() => setShowNotes(false)} />;
   }
 
-  // Quiz
   if (showQuiz) {
-    return (
-      <Quiz
-        onBack={() => setShowQuiz(false)}
-      />
-    );
+    return <Quiz onBack={() => setShowQuiz(false)} />;
   }
 
-  // Progress
   if (showProgress) {
-    return (
-      <Progress
-        onBack={() => setShowProgress(false)}
-      />
-    );
+    return <Progress onBack={() => setShowProgress(false)} />;
   }
 
-  // Profile
   if (showProfile) {
     return (
       <Profile
@@ -68,7 +53,6 @@ function App() {
     );
   }
 
-  // Dashboard
   if (showDashboard) {
     return (
       <Dashboard
@@ -85,7 +69,6 @@ function App() {
     );
   }
 
-  // Login
   if (showLogin) {
     return (
       <Login
@@ -98,7 +81,6 @@ function App() {
     );
   }
 
-  // Home
   return (
     <div className="app">
 
@@ -107,51 +89,34 @@ function App() {
       <nav className="navbar">
 
         <div className="logo">
-          <span>🎓</span> StudyGenie AI
+          <div className="logo-mark">◆</div>
+          <span>
+            StudyGenie <b>AI</b>
+          </span>
         </div>
 
         <div className="nav-links">
 
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-              });
-            }}
+          <button
+            className="nav-link active"
+            onClick={() => scrollTo("home")}
           >
             Home
-          </a>
+          </button>
 
-          <a
-            href="#features"
-            onClick={(e) => {
-              e.preventDefault();
-              document
-                .getElementById("features")
-                ?.scrollIntoView({
-                  behavior: "smooth",
-                });
-            }}
+          <button
+            className="nav-link"
+            onClick={() => scrollTo("features")}
           >
             Features
-          </a>
+          </button>
 
-          <a
-            href="#about"
-            onClick={(e) => {
-              e.preventDefault();
-              document
-                .getElementById("about")
-                ?.scrollIntoView({
-                  behavior: "smooth",
-                });
-            }}
+          <button
+            className="nav-link"
+            onClick={() => scrollTo("about")}
           >
             About
-          </a>
+          </button>
 
           <button
             className="login-btn"
@@ -166,43 +131,39 @@ function App() {
 
       {/* Hero */}
 
-      <main className="hero">
+      <main className="hero" id="home">
 
         <div className="hero-content">
 
-          <div className="badge">
-            ✨ AI-Powered Learning Assistant
+          <div className="hero-label">
+            WELCOME TO STUDYGENIE AI
           </div>
 
           <h1>
-            Study Smarter.
+            Your Personal
             <br />
-            <span>Learn Better.</span>
+            <span>Study Companion</span>
           </h1>
 
           <p>
-            StudyGenie AI helps students understand difficult topics,
-            summarize notes, generate quizzes and prepare for exams.
+            Make your learning smarter, faster, and easier with AI.
+            <br />
+            Take notes, solve doubts, practice quizzes and track your progress
+            all in one place.
           </p>
 
-          <div className="buttons">
+          <div className="hero-buttons">
 
             <button
               className="primary-btn"
               onClick={() => setShowLogin(true)}
             >
-              Start Learning
+              Get Started
             </button>
 
             <button
               className="secondary-btn"
-              onClick={() =>
-                document
-                  .getElementById("features")
-                  ?.scrollIntoView({
-                    behavior: "smooth",
-                  })
-              }
+              onClick={() => scrollTo("features")}
             >
               Explore Features
             </button>
@@ -211,185 +172,267 @@ function App() {
 
         </div>
 
-        {/* AI Card */}
+        {/* Hero Visual */}
 
-        <div className="hero-card">
+        <div className="hero-visual">
 
-          <div className="card-header">
+          <div className="soft-circle"></div>
 
-            <span>🤖</span>
-
+          <div className="floating-card ai-float">
+            <div className="float-icon purple-icon">✦</div>
             <div>
-              <h3>StudyGenie AI</h3>
-              <p>Your personal AI tutor</p>
+              <strong>AI Assistant</strong>
+              <div className="fake-lines">
+                <i></i>
+                <i></i>
+              </div>
+            </div>
+          </div>
+
+          <div className="floating-card notes-float">
+            <div className="float-icon blue-icon">▤</div>
+            <div>
+              <strong>Notes</strong>
+              <div className="fake-lines">
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
+            </div>
+          </div>
+
+          <div className="floating-card quiz-float">
+            <div className="float-icon pink-icon">□</div>
+            <div>
+              <strong>Quiz</strong>
+              <div className="fake-lines">
+                <i></i>
+                <i></i>
+              </div>
+            </div>
+          </div>
+
+          <div className="student">
+
+            <div className="plant">
+              🌿
+            </div>
+
+            <div className="student-head">
+              👨🏻
+            </div>
+
+            <div className="student-body">
+              <div className="shirt"></div>
+              <div className="arm left-arm"></div>
+              <div className="arm right-arm"></div>
+            </div>
+
+            <div className="laptop">
+              <div className="laptop-screen">
+                <span>•</span>
+              </div>
+              <div className="laptop-base"></div>
+            </div>
+
+            <div className="books">
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
 
           </div>
 
-          <div className="chat">
+          <div className="floating-card progress-float">
+            <strong>Your Progress</strong>
 
-            <div className="message user-message">
-              Explain Operating System in simple words.
+            <div className="mini-chart">
+              <i></i>
+              <i></i>
+              <i></i>
+              <i></i>
+              <i></i>
             </div>
-
-            <div className="message ai-message">
-              Sure! 😊 An Operating System is software that manages
-              your computer's hardware and allows applications to run.
-            </div>
-
           </div>
 
-          <div className="input-box">
-
-            <span>Ask anything...</span>
-
-            <button>➤</button>
-
-          </div>
+          <div className="desk-line"></div>
 
         </div>
 
       </main>
 
+      {/* Stats */}
+
+      <section className="stats-section">
+
+        <div className="stat">
+          <strong>10K+</strong>
+          <span>Students</span>
+        </div>
+
+        <div className="stat">
+          <strong>5K+</strong>
+          <span>Notes Created</span>
+        </div>
+
+        <div className="stat">
+          <strong>1K+</strong>
+          <span>Quizzes Taken</span>
+        </div>
+
+        <div className="stat">
+          <strong>95%</strong>
+          <span>Positive Feedback</span>
+        </div>
+
+      </section>
+
+      <button
+        className="scroll-down"
+        onClick={() => scrollTo("features")}
+      >
+        ↓
+      </button>
+
       {/* Features */}
 
-      <section
-        className="features"
-        id="features"
-      >
+      <section className="features" id="features">
 
-        <h2>
-          Everything You Need to Study Better
-        </h2>
+        <div className="section-label">
+          WHAT WE OFFER
+        </div>
+
+        <h2>Powerful Features for Smarter Learning</h2>
+
+        <p className="section-subtitle">
+          Everything you need to study, organize and grow — in one place.
+        </p>
 
         <div className="feature-grid">
-
-          {/* Smart Summaries */}
-
-          <div
-            className="feature-card"
-            onClick={() => setShowNotes(true)}
-          >
-
-            <div className="icon">
-              📄
-            </div>
-
-            <h3>
-              Smart Summaries
-            </h3>
-
-            <p>
-              Convert lengthy notes into short and easy summaries.
-            </p>
-
-          </div>
-
-          {/* AI Assistant */}
 
           <div
             className="feature-card"
             onClick={() => setShowAI(true)}
           >
-
-            <div className="icon">
-              🧠
+            <div className="feature-icon purple">
+              ✦
             </div>
-
-            <h3>
-              AI Study Assistant
-            </h3>
-
+            <h3>AI Assistant</h3>
             <p>
-              Ask questions and get simple explanations instantly.
+              Get instant answers to your doubts with your AI-powered study assistant.
             </p>
-
           </div>
 
-          {/* Quiz */}
+          <div
+            className="feature-card"
+            onClick={() => setShowNotes(true)}
+          >
+            <div className="feature-icon blue">
+              ▤
+            </div>
+            <h3>Smart Notes</h3>
+            <p>
+              Create, organize and manage your study notes easily.
+            </p>
+          </div>
 
           <div
             className="feature-card"
             onClick={() => setShowQuiz(true)}
           >
-
-            <div className="icon">
-              📝
+            <div className="feature-icon green">
+              ✓
             </div>
-
-            <h3>
-              AI Quiz Generator
-            </h3>
-
+            <h3>Quizzes</h3>
             <p>
-              Generate practice questions and test your knowledge.
+              Practice with AI generated quizzes to test your knowledge.
             </p>
-
           </div>
-
-          {/* Progress */}
 
           <div
             className="feature-card"
             onClick={() => setShowProgress(true)}
           >
-
-            <div className="icon">
-              📊
+            <div className="feature-icon orange">
+              ▥
             </div>
-
-            <h3>
-              Progress Tracking
-            </h3>
-
+            <h3>Progress Tracking</h3>
             <p>
-              Track your learning progress and improve your preparation.
+              Track your learning progress and stay consistent.
             </p>
-
           </div>
 
+          <div
+            className="feature-card"
+            onClick={() => setShowNotes(true)}
+          >
+            <div className="feature-icon pink">
+              ▮
+            </div>
+            <h3>Study Materials</h3>
+            <p>
+              Manage your study materials and resources in one place.
+            </p>
+          </div>
+
+          <div
+            className="feature-card"
+            onClick={() => setShowProfile(true)}
+          >
+            <div className="feature-icon violet">
+              ♙
+            </div>
+            <h3>User Profile</h3>
+            <p>
+              Keep your profile and learning preferences in one place.
+            </p>
+          </div>
+
+        </div>
+
+        <div className="quote-box">
+          <strong>
+            “Study smart, not hard with StudyGenie AI.”
+          </strong>
+          <span>— Your Learning, Our Priority</span>
         </div>
 
       </section>
 
       {/* About */}
 
-      <section
-        className="about-section"
-        id="about"
-      >
+      <section className="about-section" id="about">
 
         <div className="about-content">
 
+          <div className="section-label">
+            ABOUT US
+          </div>
+
           <h2>
-            About StudyGenie AI
+            Your Smart Partner for Better Learning
           </h2>
 
           <p>
-            StudyGenie AI is a smart learning platform designed to make
-            studying easier and more effective for students. It provides
-            useful features like an AI Study Assistant, study notes,
-            quizzes, and progress tracking in one place.
+            StudyGenie AI is designed to make studying simple, organized
+            and effective. From understanding difficult topics to practicing
+            quizzes and tracking your progress, everything is available in
+            one place.
           </p>
 
-          <p>
-            Students can use StudyGenie AI to understand difficult topics,
-            manage their study materials, practice through quizzes, and
-            track their learning progress.
-          </p>
+          <button
+            className="primary-btn"
+            onClick={() => setShowLogin(true)}
+          >
+            Start Learning
+          </button>
 
         </div>
 
       </section>
 
-      {/* Footer */}
-
       <footer>
-
-        <p>
-          © 2026 StudyGenie AI • Smart Learning for Students
-        </p>
-
+        © 2026 StudyGenie AI • Smart Learning for Students
       </footer>
 
     </div>

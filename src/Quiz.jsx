@@ -2,10 +2,6 @@ import { useState } from "react";
 import "./Quiz.css";
 
 function Quiz({ onBack }) {
-  /* ============================= */
-  /* Quiz Question Bank */
-  /* ============================= */
-
   const questionBank = {
     Java: [
       {
@@ -33,41 +29,31 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "Which collection does not allow duplicate elements?",
-        options: [
-          "ArrayList",
-          "LinkedList",
-          "HashSet",
-          "Vector",
-        ],
+        question: "Which collection does not allow duplicate elements?",
+        options: ["ArrayList", "LinkedList", "HashSet", "Vector"],
         answer: "HashSet",
         difficulty: "Easy",
       },
       {
-        question:
-          "Which data type is used to store true or false?",
+        question: "Which data type is used to store true or false?",
         options: ["int", "String", "boolean", "char"],
         answer: "boolean",
         difficulty: "Easy",
       },
       {
-        question:
-          "Which keyword is used to inherit a class in Java?",
+        question: "Which keyword is used to inherit a class in Java?",
         options: ["implements", "extends", "inherits", "super"],
         answer: "extends",
         difficulty: "Medium",
       },
       {
-        question:
-          "Which keyword is used to prevent method overriding?",
+        question: "Which keyword is used to prevent method overriding?",
         options: ["static", "final", "private", "constant"],
         answer: "final",
         difficulty: "Medium",
       },
       {
-        question:
-          "Which of these is not an OOP concept?",
+        question: "Which of these is not an OOP concept?",
         options: [
           "Inheritance",
           "Encapsulation",
@@ -78,8 +64,7 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "Which keyword is used to create an object in Java?",
+        question: "Which keyword is used to create an object in Java?",
         options: ["create", "object", "new", "class"],
         answer: "new",
         difficulty: "Easy",
@@ -111,8 +96,7 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "Which key uniquely identifies a record in a table?",
+        question: "Which key uniquely identifies a record in a table?",
         options: [
           "Foreign Key",
           "Primary Key",
@@ -123,36 +107,31 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "Which language is used to query databases?",
+        question: "Which language is used to query databases?",
         options: ["HTML", "CSS", "SQL", "XML"],
         answer: "SQL",
         difficulty: "Easy",
       },
       {
-        question:
-          "Which command is used to retrieve data?",
+        question: "Which command is used to retrieve data?",
         options: ["GET", "SELECT", "FETCH", "READ"],
         answer: "SELECT",
         difficulty: "Easy",
       },
       {
-        question:
-          "Which normal form removes partial dependency?",
+        question: "Which normal form removes partial dependency?",
         options: ["1NF", "2NF", "3NF", "BCNF"],
         answer: "2NF",
         difficulty: "Medium",
       },
       {
-        question:
-          "Which SQL command is used to remove a table?",
+        question: "Which SQL command is used to remove a table?",
         options: ["DELETE", "REMOVE", "DROP", "CLEAR"],
         answer: "DROP",
         difficulty: "Easy",
       },
       {
-        question:
-          "Which key creates a relationship between two tables?",
+        question: "Which key creates a relationship between two tables?",
         options: [
           "Primary Key",
           "Foreign Key",
@@ -163,20 +142,13 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "Which operation combines rows from two or more tables?",
-        options: [
-          "JOIN",
-          "MERGE",
-          "UNION",
-          "CONNECT",
-        ],
+        question: "Which operation combines rows from two or more tables?",
+        options: ["JOIN", "MERGE", "UNION", "CONNECT"],
         answer: "JOIN",
         difficulty: "Medium",
       },
       {
-        question:
-          "What is a collection of related data called?",
+        question: "What is a collection of related data called?",
         options: [
           "Database",
           "Program",
@@ -202,8 +174,7 @@ function Quiz({ onBack }) {
 
     "Operating System": [
       {
-        question:
-          "What is the main function of an Operating System?",
+        question: "What is the main function of an Operating System?",
         options: [
           "Manage hardware and software",
           "Create websites",
@@ -214,20 +185,13 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "Which of these is an Operating System?",
-        options: [
-          "Java",
-          "Windows",
-          "Oracle",
-          "HTML",
-        ],
+        question: "Which of these is an Operating System?",
+        options: ["Java", "Windows", "Oracle", "HTML"],
         answer: "Windows",
         difficulty: "Easy",
       },
       {
-        question:
-          "Which component manages processes?",
+        question: "Which component manages processes?",
         options: [
           "Process Scheduler",
           "Compiler",
@@ -238,8 +202,7 @@ function Quiz({ onBack }) {
         difficulty: "Medium",
       },
       {
-        question:
-          "What is a process?",
+        question: "What is a process?",
         options: [
           "Program in execution",
           "Computer hardware",
@@ -250,8 +213,7 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "Which memory management technique uses pages?",
+        question: "Which memory management technique uses pages?",
         options: [
           "Paging",
           "Segmentation",
@@ -262,8 +224,7 @@ function Quiz({ onBack }) {
         difficulty: "Medium",
       },
       {
-        question:
-          "Which scheduling algorithm uses a time quantum?",
+        question: "Which scheduling algorithm uses a time quantum?",
         options: [
           "FCFS",
           "Round Robin",
@@ -274,15 +235,13 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "Deadlock requires how many necessary conditions?",
+        question: "Deadlock requires how many necessary conditions?",
         options: ["2", "3", "4", "5"],
         answer: "4",
         difficulty: "Medium",
       },
       {
-        question:
-          "Which is a type of Operating System?",
+        question: "Which is a type of Operating System?",
         options: [
           "Real-Time OS",
           "HTML OS",
@@ -293,8 +252,7 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "What does CPU scheduling decide?",
+        question: "What does CPU scheduling decide?",
         options: [
           "Which process gets CPU",
           "Which file to delete",
@@ -320,41 +278,31 @@ function Quiz({ onBack }) {
 
     "Computer Networks": [
       {
-        question:
-          "Which device connects different networks?",
-        options: [
-          "Switch",
-          "Router",
-          "Hub",
-          "Repeater",
-        ],
+        question: "Which device connects different networks?",
+        options: ["Switch", "Router", "Hub", "Repeater"],
         answer: "Router",
         difficulty: "Easy",
       },
       {
-        question:
-          "How many layers are there in the OSI model?",
+        question: "How many layers are there in the OSI model?",
         options: ["5", "6", "7", "8"],
         answer: "7",
         difficulty: "Easy",
       },
       {
-        question:
-          "Which protocol is used to browse websites?",
+        question: "Which protocol is used to browse websites?",
         options: ["HTTP", "FTP", "SMTP", "SSH"],
         answer: "HTTP",
         difficulty: "Easy",
       },
       {
-        question:
-          "Which protocol is used to send email?",
+        question: "Which protocol is used to send email?",
         options: ["SMTP", "HTTP", "FTP", "DNS"],
         answer: "SMTP",
         difficulty: "Easy",
       },
       {
-        question:
-          "What does IP stand for?",
+        question: "What does IP stand for?",
         options: [
           "Internet Protocol",
           "Internal Program",
@@ -372,15 +320,13 @@ function Quiz({ onBack }) {
         difficulty: "Medium",
       },
       {
-        question:
-          "Which protocol automatically assigns IP addresses?",
+        question: "Which protocol automatically assigns IP addresses?",
         options: ["DNS", "DHCP", "HTTP", "TCP"],
         answer: "DHCP",
         difficulty: "Medium",
       },
       {
-        question:
-          "Which protocol provides reliable data delivery?",
+        question: "Which protocol provides reliable data delivery?",
         options: ["UDP", "TCP", "IP", "ICMP"],
         answer: "TCP",
         difficulty: "Easy",
@@ -388,18 +334,12 @@ function Quiz({ onBack }) {
       {
         question:
           "Which device forwards frames using MAC addresses?",
-        options: [
-          "Router",
-          "Switch",
-          "Modem",
-          "Gateway",
-        ],
+        options: ["Router", "Switch", "Modem", "Gateway"],
         answer: "Switch",
         difficulty: "Medium",
       },
       {
-        question:
-          "Which layer of OSI handles routing?",
+        question: "Which layer of OSI handles routing?",
         options: [
           "Transport",
           "Network",
@@ -413,8 +353,7 @@ function Quiz({ onBack }) {
 
     DSA: [
       {
-        question:
-          "Which data structure follows LIFO?",
+        question: "Which data structure follows LIFO?",
         options: [
           "Queue",
           "Stack",
@@ -425,8 +364,7 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "Which data structure follows FIFO?",
+        question: "Which data structure follows FIFO?",
         options: [
           "Stack",
           "Queue",
@@ -437,8 +375,7 @@ function Quiz({ onBack }) {
         difficulty: "Easy",
       },
       {
-        question:
-          "What is the time complexity of binary search?",
+        question: "What is the time complexity of binary search?",
         options: [
           "O(n)",
           "O(log n)",
@@ -449,8 +386,7 @@ function Quiz({ onBack }) {
         difficulty: "Medium",
       },
       {
-        question:
-          "Which data structure is used in BFS?",
+        question: "Which data structure is used in BFS?",
         options: [
           "Stack",
           "Queue",
@@ -461,8 +397,7 @@ function Quiz({ onBack }) {
         difficulty: "Medium",
       },
       {
-        question:
-          "Which data structure is used in DFS?",
+        question: "Which data structure is used in DFS?",
         options: [
           "Queue",
           "Stack",
@@ -485,8 +420,7 @@ function Quiz({ onBack }) {
         difficulty: "Medium",
       },
       {
-        question:
-          "Which data structure stores key-value pairs?",
+        question: "Which data structure stores key-value pairs?",
         options: [
           "Stack",
           "Hash Table",
@@ -521,8 +455,7 @@ function Quiz({ onBack }) {
         difficulty: "Hard",
       },
       {
-        question:
-          "What is the worst-case complexity of Bubble Sort?",
+        question: "What is the worst-case complexity of Bubble Sort?",
         options: [
           "O(1)",
           "O(log n)",
@@ -535,59 +468,35 @@ function Quiz({ onBack }) {
     ],
   };
 
-  /* ============================= */
-  /* Setup States */
-  /* ============================= */
-
   const [started, setStarted] = useState(false);
-
   const [subject, setSubject] = useState("Java");
-
   const [difficulty, setDifficulty] = useState("All");
-
   const [questionCount, setQuestionCount] = useState(5);
-
-  /* ============================= */
-  /* Quiz States */
-  /* ============================= */
-
   const [questions, setQuestions] = useState([]);
-
   const [currentQuestion, setCurrentQuestion] = useState(0);
-
   const [selectedAnswer, setSelectedAnswer] = useState("");
-
   const [score, setScore] = useState(0);
-
   const [finished, setFinished] = useState(false);
-
-  // NEW: answer checked state
   const [answerChecked, setAnswerChecked] = useState(false);
 
-  /* ============================= */
-  /* Start Quiz */
-  /* ============================= */
-
   const startQuiz = () => {
-    let availableQuestions = questionBank[subject];
+    let list = questionBank[subject] || [];
 
     if (difficulty !== "All") {
-      availableQuestions = availableQuestions.filter(
+      list = list.filter(
         (item) => item.difficulty === difficulty
       );
     }
 
-    const shuffled = [...availableQuestions]
+    const selected = [...list]
       .sort(() => Math.random() - 0.5)
-      .slice(
-        0,
-        Math.min(
-          questionCount,
-          availableQuestions.length
-        )
-      );
+      .slice(0, Math.min(questionCount, list.length));
 
-    setQuestions(shuffled);
+    if (!selected.length) {
+      return;
+    }
+
+    setQuestions(selected);
     setCurrentQuestion(0);
     setSelectedAnswer("");
     setScore(0);
@@ -596,12 +505,7 @@ function Quiz({ onBack }) {
     setStarted(true);
   };
 
-  /* ============================= */
-  /* Select Answer */
-  /* ============================= */
-
   const selectAnswer = (option) => {
-    // Don't allow changing answer after checking
     if (answerChecked) {
       return;
     }
@@ -610,76 +514,57 @@ function Quiz({ onBack }) {
     setAnswerChecked(true);
   };
 
-  /* ============================= */
-  /* Next Question */
-  /* ============================= */
-
   const nextQuestion = () => {
-    if (!selectedAnswer || !answerChecked) {
+    if (!answerChecked) {
       return;
     }
 
     const current = questions[currentQuestion];
 
-    let newScore = score;
+    const newScore =
+      selectedAnswer === current.answer
+        ? score + 1
+        : score;
 
-    if (selectedAnswer === current.answer) {
-      newScore = score + 1;
-      setScore(newScore);
-    }
-
-    /* Last Question */
-
-    if (
-      currentQuestion ===
-      questions.length - 1
-    ) {
+    if (currentQuestion === questions.length - 1) {
       const percentage = Math.round(
         (newScore / questions.length) * 100
       );
 
-      /* Save Quiz History */
-
-      const oldHistory = JSON.parse(
+      const history = JSON.parse(
         localStorage.getItem("quizHistory") || "[]"
       );
 
-      const newQuiz = {
+      const quiz = {
         id: Date.now(),
         quizName: `${subject} Quiz`,
-        subject: subject,
-        difficulty: difficulty,
+        subject,
+        difficulty,
         score: newScore,
         total: questions.length,
-        percentage: percentage,
+        percentage,
         date: new Date().toLocaleDateString(),
       };
 
-      const updatedHistory = [
-        newQuiz,
-        ...oldHistory,
-      ];
-
       localStorage.setItem(
         "quizHistory",
-        JSON.stringify(updatedHistory)
+        JSON.stringify([quiz, ...history])
+      );
+
+      window.dispatchEvent(
+        new Event("studygenie-update")
       );
 
       setScore(newScore);
       setFinished(true);
-    } else {
-      setCurrentQuestion(
-        currentQuestion + 1
-      );
-
-      setSelectedAnswer("");
-      setAnswerChecked(false);
+      return;
     }
-  };
 
-  /* ============================= */
-  /* Restart */
-  /* ============================= */
+    setScore(newScore);
+    setCurrentQuestion(currentQuestion + 1);
+    setSelectedAnswer("");
+    setAnswerChecked(false);
+  };
 
   const restartQuiz = () => {
     setStarted(false);
@@ -691,222 +576,214 @@ function Quiz({ onBack }) {
     setAnswerChecked(false);
   };
 
-  /* ============================= */
-  /* Setup Screen */
-  /* ============================= */
+  const percentage = questions.length
+    ? Math.round((score / questions.length) * 100)
+    : 0;
 
   if (!started) {
     return (
-      <div className="quiz-page">
+      <section className="quiz-content-page">
 
-        <header className="quiz-header">
-
-          <button
-            className="back-btn"
-            onClick={onBack}
-          >
-            ← Dashboard
-          </button>
+        <div className="quiz-hero">
 
           <div>
+            <span className="quiz-label">
+              TEST YOUR KNOWLEDGE
+            </span>
+
             <h1>
-              📝 StudyGenie Quiz
+              StudyGenie <span>Quiz</span>
             </h1>
 
             <p>
-              Test your knowledge
+              Practice your subjects, test your knowledge
+              and improve your preparation.
             </p>
           </div>
 
-        </header>
+          <div className="quiz-hero-icon">
+            📝
+          </div>
 
-        <main className="quiz-main">
+        </div>
 
-          <div className="question-card">
+        <div className="quiz-setup-card">
 
-            <span className="question-number">
-              QUIZ SETUP
-            </span>
-
-            <h2>
-              Customize your quiz
-            </h2>
-
-            {/* Subject */}
-
-            <div className="quiz-setting">
-
-              <label>
-                📚 Choose Subject
-              </label>
-
-              <select
-                value={subject}
-                onChange={(e) =>
-                  setSubject(e.target.value)
-                }
-              >
-
-                {Object.keys(
-                  questionBank
-                ).map((item) => (
-
-                  <option
-                    key={item}
-                    value={item}
-                  >
-                    {item}
-                  </option>
-
-                ))}
-
-              </select>
-
+          <div className="setup-heading">
+            <div>
+              <h2>Build Your Quiz</h2>
+              <p>
+                Choose your subject, level and number of questions.
+              </p>
             </div>
 
-            {/* Difficulty */}
+            <div className="setup-badge">
+              ✦ Practice Mode
+            </div>
+          </div>
 
-            <div className="quiz-setting">
+          <div className="quiz-options">
 
-              <label>
-                🎯 Difficulty
-              </label>
+            <div className="quiz-field">
+              <label>Subject</label>
 
-              <select
-                value={difficulty}
-                onChange={(e) =>
-                  setDifficulty(e.target.value)
-                }
-              >
+              <div className="select-wrap">
+                <span>📚</span>
 
-                <option value="All">
-                  All Levels
-                </option>
-
-                <option value="Easy">
-                  Easy
-                </option>
-
-                <option value="Medium">
-                  Medium
-                </option>
-
-                <option value="Hard">
-                  Hard
-                </option>
-
-              </select>
-
+                <select
+                  value={subject}
+                  onChange={(e) =>
+                    setSubject(e.target.value)
+                  }
+                >
+                  {Object.keys(questionBank).map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            {/* Number */}
+            <div className="quiz-field">
+              <label>Difficulty</label>
 
-            <div className="quiz-setting">
+              <div className="select-wrap">
+                <span>⚡</span>
 
-              <label>
-                🔢 Number of Questions
-              </label>
-
-              <select
-                value={questionCount}
-                onChange={(e) =>
-                  setQuestionCount(
-                    Number(e.target.value)
-                  )
-                }
-              >
-
-                <option value={5}>
-                  5 Questions
-                </option>
-
-                <option value={10}>
-                  10 Questions
-                </option>
-
-              </select>
-
+                <select
+                  value={difficulty}
+                  onChange={(e) =>
+                    setDifficulty(e.target.value)
+                  }
+                >
+                  <option value="All">All Levels</option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
             </div>
 
-            <button
-              className="next-btn"
-              onClick={startQuiz}
-            >
-              Start Quiz →
-            </button>
+            <div className="quiz-field">
+              <label>Questions</label>
+
+              <div className="select-wrap">
+                <span>📝</span>
+
+                <select
+                  value={questionCount}
+                  onChange={(e) =>
+                    setQuestionCount(
+                      Number(e.target.value)
+                    )
+                  }
+                >
+                  <option value={5}>5 Questions</option>
+                  <option value={10}>10 Questions</option>
+                </select>
+              </div>
+            </div>
 
           </div>
 
-        </main>
+          <button
+            type="button"
+            className="start-quiz-btn"
+            onClick={startQuiz}
+          >
+            Start Quiz
+            <span>→</span>
+          </button>
 
-      </div>
+        </div>
+
+        <div className="quiz-info-grid">
+
+          <div className="quiz-info-card">
+            <div className="info-icon purple">✦</div>
+            <div>
+              <strong>Practice Smart</strong>
+              <p>Random questions every time.</p>
+            </div>
+          </div>
+
+          <div className="quiz-info-card">
+            <div className="info-icon green">✓</div>
+            <div>
+              <strong>Instant Feedback</strong>
+              <p>Know your answer immediately.</p>
+            </div>
+          </div>
+
+          <div className="quiz-info-card">
+            <div className="info-icon orange">★</div>
+            <div>
+              <strong>Track Progress</strong>
+              <p>Your scores are saved automatically.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
     );
   }
 
-  /* ============================= */
-  /* Result Screen */
-  /* ============================= */
-
   if (finished) {
-
-    const percentage = Math.round(
-      (score / questions.length) * 100
-    );
-
-    let message =
-      "Keep practicing! 💪";
-
-    if (percentage >= 80) {
-      message =
-        "Excellent work! 🎉";
-    } else if (percentage >= 60) {
-      message =
-        "Good job! Keep improving! 👍";
-    }
-
     return (
-      <div className="quiz-page">
+      <section className="quiz-content-page">
 
-        <div className="quiz-result">
+        <div className="quiz-result-card">
 
           <div className="result-icon">
             🎉
           </div>
 
+          <span className="quiz-label">
+            QUIZ COMPLETED
+          </span>
+
           <h1>
-            Quiz Completed!
+            Great Job!
           </h1>
 
           <p>
-            {message}
+            You completed the {subject} quiz.
           </p>
 
-          <p>
-            {subject} • {difficulty}
-          </p>
-
-          <div className="score-box">
+          <div className="result-score">
 
             <strong>
-              {score}/{questions.length}
+              {percentage}%
             </strong>
 
             <span>
-              {percentage}% Score
+              {score} correct out of {questions.length}
             </span>
 
+          </div>
+
+          <div className="result-message">
+            {percentage >= 80
+              ? "Excellent work! Keep up the great preparation. 🎉"
+              : percentage >= 60
+              ? "Good job! Keep practicing to improve further. 👍"
+              : "Keep practicing. You will improve with consistency. 💪"}
           </div>
 
           <div className="result-buttons">
 
             <button
+              type="button"
               onClick={restartQuiz}
             >
               Try Again
             </button>
 
             <button
-              className="back-result"
+              type="button"
+              className="result-back-btn"
               onClick={onBack}
             >
               Back to Dashboard
@@ -916,279 +793,170 @@ function Quiz({ onBack }) {
 
         </div>
 
-      </div>
+      </section>
     );
   }
 
-  /* ============================= */
-  /* Active Quiz */
-  /* ============================= */
+  const question = questions[currentQuestion];
+  const progress =
+    ((currentQuestion + 1) / questions.length) * 100;
 
-  const question =
-    questions[currentQuestion];
-
-  /* ============================= */
-  /* Option Style */
-  /* ============================= */
-
-  const getOptionStyle = (option) => {
-
-    if (!answerChecked) {
-      return {};
-    }
-
-    // Correct answer
-    if (option === question.answer) {
-      return {
-        border: "2px solid #22c55e",
-        background: "#ecfdf5",
-        color: "#15803d",
-        fontWeight: "700",
-      };
-    }
-
-    // Wrong selected answer
-    if (
-      option === selectedAnswer &&
-      option !== question.answer
-    ) {
-      return {
-        border: "2px solid #ef4444",
-        background: "#fef2f2",
-        color: "#dc2626",
-        fontWeight: "700",
-      };
-    }
-
-    return {
-      opacity: "0.65",
-    };
-  };
+  const labels = ["A", "B", "C", "D"];
 
   return (
-    <div className="quiz-page">
+    <section className="quiz-content-page">
 
-      {/* Header */}
-
-      <header className="quiz-header">
-
-        <button
-          className="back-btn"
-          onClick={onBack}
-        >
-          ← Dashboard
-        </button>
+      <div className="active-quiz-header">
 
         <div>
-
-          <h1>
-            📝 {subject} Quiz
-          </h1>
-
-          <p>
-            {difficulty === "All"
-              ? "All difficulty levels"
-              : `${difficulty} level`}
-          </p>
-
-        </div>
-
-        <div className="quiz-count">
-
-          {currentQuestion + 1}
-          {" / "}
-          {questions.length}
-
-        </div>
-
-      </header>
-
-      {/* Main */}
-
-      <main className="quiz-main">
-
-        {/* Progress */}
-
-        <div className="progress-bar">
-
-          <div
-            className="progress-fill"
-            style={{
-              width:
-                `${
-                  ((currentQuestion + 1) /
-                    questions.length) *
-                  100
-                }%`,
-            }}
-          />
-
-        </div>
-
-        {/* Question */}
-
-        <div className="question-card">
-
-          <span className="question-number">
-
-            Question{" "}
-            {currentQuestion + 1}
-
+          <span className="quiz-label">
+            {subject.toUpperCase()} QUIZ
           </span>
 
-          <h2>
-            {question.question}
-          </h2>
+          <h1>
+            Practice Quiz
+          </h1>
+        </div>
 
-          {/* Options */}
+        <button
+          type="button"
+          className="exit-quiz-btn"
+          onClick={restartQuiz}
+        >
+          Exit Quiz
+        </button>
 
-          <div className="options">
+      </div>
 
-            {question.options.map(
-              (option, index) => {
+      <div className="quiz-progress-top">
 
-                const labels = [
-                  "A",
-                  "B",
-                  "C",
-                  "D",
-                ];
+        <div>
+          Question {currentQuestion + 1} of{" "}
+          {questions.length}
+        </div>
 
-                return (
-                  <button
-                    key={option}
-                    className={`option ${
-                      selectedAnswer === option
-                        ? "selected"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      selectAnswer(option)
-                    }
-                    disabled={answerChecked}
-                    style={getOptionStyle(option)}
-                  >
+        <strong>
+          {Math.round(progress)}%
+        </strong>
 
-                    <span
-                      className="option-label"
-                      style={
-                        answerChecked &&
-                        option === question.answer
-                          ? {
-                              background:
-                                "#22c55e",
-                              color: "white",
-                              borderColor:
-                                "#22c55e",
-                            }
-                          : answerChecked &&
-                            option ===
-                              selectedAnswer &&
-                            option !==
-                              question.answer
-                          ? {
-                              background:
-                                "#ef4444",
-                              color: "white",
-                              borderColor:
-                                "#ef4444",
-                            }
-                          : {}
-                      }
-                    >
-                      {labels[index]}
-                    </span>
+      </div>
 
-                    <span className="option-text">
-                      {option}
-                    </span>
+      <div className="quiz-progress-bar">
+        <div style={{ width: `${progress}%` }} />
+      </div>
 
-                  </button>
-                );
-              }
-            )}
+      <div className="question-card">
 
-          </div>
+        <div className="question-card-header">
 
-          {/* Answer Feedback */}
+          <span>
+            Question {currentQuestion + 1}
+          </span>
 
-          {answerChecked && (
+          <span className="score-pill">
+            Score: {score}
+          </span>
 
-            <div
-              style={{
-                marginTop: "18px",
-                padding: "13px 16px",
-                borderRadius: "10px",
-                background:
-                  selectedAnswer ===
-                  question.answer
-                    ? "#ecfdf5"
-                    : "#fef2f2",
-                color:
-                  selectedAnswer ===
-                  question.answer
-                    ? "#15803d"
-                    : "#dc2626",
-                fontSize: "14px",
-                fontWeight: "600",
-                border:
-                  selectedAnswer ===
-                  question.answer
-                    ? "1px solid #bbf7d0"
-                    : "1px solid #fecaca",
-              }}
-            >
+        </div>
 
-              {selectedAnswer ===
-              question.answer ? (
-                <>
-                  ✓ Correct Answer! 🎉
-                </>
-              ) : (
-                <>
-                  ✗ Incorrect Answer.
-                  <br />
+        <h2>
+          {question.question}
+        </h2>
 
-                  <span
-                    style={{
-                      display: "inline-block",
-                      marginTop: "5px",
-                    }}
-                  >
-                    Correct Answer:{" "}
-                    <strong>
-                      {question.answer}
-                    </strong>
+        <div className="options">
+
+          {question.options.map((option, index) => {
+
+            const correct =
+              answerChecked &&
+              option === question.answer;
+
+            const wrong =
+              answerChecked &&
+              option === selectedAnswer &&
+              option !== question.answer;
+
+            return (
+              <button
+                type="button"
+                key={option}
+                disabled={answerChecked}
+                className={`quiz-option ${
+                  selectedAnswer === option
+                    ? "selected"
+                    : ""
+                } ${correct ? "correct" : ""} ${
+                  wrong ? "wrong" : ""
+                }`}
+                onClick={() =>
+                  selectAnswer(option)
+                }
+              >
+                <span className="option-label">
+                  {labels[index]}
+                </span>
+
+                <span>
+                  {option}
+                </span>
+
+                {correct && (
+                  <span className="option-status">
+                    ✓
                   </span>
-                </>
-              )}
+                )}
 
-            </div>
+                {wrong && (
+                  <span className="option-status">
+                    ✕
+                  </span>
+                )}
+              </button>
+            );
+          })}
 
-          )}
+        </div>
 
-          {/* Next */}
+        {answerChecked && (
+          <div
+            className={
+              selectedAnswer === question.answer
+                ? "answer-message correct-message"
+                : "answer-message wrong-message"
+            }
+          >
+            {selectedAnswer === question.answer
+              ? "✓ Correct Answer! 🎉"
+              : `✕ Incorrect. Correct Answer: ${question.answer}`}
+          </div>
+        )}
+
+        <div className="question-footer">
+
+          <span>
+            {answerChecked
+              ? "Answer selected"
+              : "Select an answer to continue"}
+          </span>
 
           <button
-            className="next-btn"
-            onClick={nextQuestion}
+            type="button"
+            className="next-question-btn"
             disabled={!answerChecked}
+            onClick={nextQuestion}
           >
-
-            {!answerChecked
-              ? "Select an Answer"
-              : currentQuestion ===
-                questions.length - 1
-              ? "Finish Quiz 🎉"
-              : "Next Question →"}
-
+            {currentQuestion === questions.length - 1
+              ? "Finish Quiz"
+              : "Next Question"}
+            <span>→</span>
           </button>
 
         </div>
 
-      </main>
+      </div>
 
-    </div>
+    </section>
   );
 }
+
 export default Quiz;

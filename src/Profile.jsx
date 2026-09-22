@@ -10,12 +10,11 @@ function Profile({ onBack, onLogout }) {
   };
 
   const [profile, setProfile] = useState(() => {
-    const savedProfile =
-      localStorage.getItem("studygenieProfile");
+    const saved = localStorage.getItem("studygenieProfile");
 
-    if (savedProfile) {
+    if (saved) {
       try {
-        return JSON.parse(savedProfile);
+        return JSON.parse(saved);
       } catch {
         return defaultProfile;
       }
@@ -42,14 +41,9 @@ function Profile({ onBack, onLogout }) {
 
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const fileInputRef = useRef(null);
-
-  /* ============================= */
-  /* Update Dashboard */
-  /* ============================= */
 
   const notifyDashboard = () => {
     window.dispatchEvent(
@@ -57,16 +51,10 @@ function Profile({ onBack, onLogout }) {
     );
   };
 
-  /* ============================= */
-  /* Save Profile */
-  /* ============================= */
-
   const saveProfile = () => {
     const updatedProfile = {
       name: name.trim() || "Student",
-      email:
-        email.trim() ||
-        "student@example.com",
+      email: email.trim() || "student@example.com",
       learningMode,
       subjects,
     };
@@ -80,15 +68,10 @@ function Profile({ onBack, onLogout }) {
 
     setName(updatedProfile.name);
     setEmail(updatedProfile.email);
-
     setEditing(false);
 
     notifyDashboard();
   };
-
-  /* ============================= */
-  /* Photo */
-  /* ============================= */
 
   const openFilePicker = () => {
     fileInputRef.current?.click();
@@ -104,8 +87,7 @@ function Profile({ onBack, onLogout }) {
     const reader = new FileReader();
 
     reader.onload = () => {
-      const image =
-        reader.result;
+      const image = reader.result;
 
       setPhoto(image);
 
@@ -123,16 +105,10 @@ function Profile({ onBack, onLogout }) {
   const removePhoto = () => {
     setPhoto("");
 
-    localStorage.removeItem(
-      "profilePhoto"
-    );
+    localStorage.removeItem("profilePhoto");
 
     notifyDashboard();
   };
-
-  /* ============================= */
-  /* Learning Mode */
-  /* ============================= */
 
   const changeLearningMode = () => {
     const newMode =
@@ -144,11 +120,8 @@ function Profile({ onBack, onLogout }) {
 
     const updatedProfile = {
       ...profile,
-      name:
-        name.trim() || "Student",
-      email:
-        email.trim() ||
-        "student@example.com",
+      name: name.trim() || "Student",
+      email: email.trim() || "student@example.com",
       learningMode: newMode,
       subjects,
     };
@@ -163,10 +136,6 @@ function Profile({ onBack, onLogout }) {
     notifyDashboard();
   };
 
-  /* ============================= */
-  /* Subjects */
-  /* ============================= */
-
   const changeSubjects = () => {
     const value = prompt(
       "Enter subjects separated by commas:",
@@ -180,9 +149,7 @@ function Profile({ onBack, onLogout }) {
     const newSubjects = value
       .split(",")
       .map((item) => item.trim())
-      .filter(
-        (item) => item !== ""
-      );
+      .filter((item) => item !== "");
 
     if (newSubjects.length === 0) {
       return;
@@ -192,11 +159,8 @@ function Profile({ onBack, onLogout }) {
 
     const updatedProfile = {
       ...profile,
-      name:
-        name.trim() || "Student",
-      email:
-        email.trim() ||
-        "student@example.com",
+      name: name.trim() || "Student",
+      email: email.trim() || "student@example.com",
       learningMode,
       subjects: newSubjects,
     };
@@ -211,34 +175,18 @@ function Profile({ onBack, onLogout }) {
     notifyDashboard();
   };
 
-  /* ============================= */
-  /* Password */
-  /* ============================= */
-
   const savePassword = () => {
-    if (
-      !password ||
-      !confirmPassword
-    ) {
-      alert(
-        "Please enter both password fields."
-      );
+    if (!password || !confirmPassword) {
+      alert("Please enter both password fields.");
       return;
     }
 
-    if (
-      password !==
-      confirmPassword
-    ) {
-      alert(
-        "Passwords do not match."
-      );
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
       return;
     }
 
-    alert(
-      "Password changed successfully."
-    );
+    alert("Password changed successfully.");
 
     setPassword("");
     setConfirmPassword("");
@@ -248,60 +196,33 @@ function Profile({ onBack, onLogout }) {
   return (
     <div className="profile-page">
 
-      {/* ============================= */}
-      {/* Header */}
-      {/* ============================= */}
-
-      <header className="profile-header">
-
-        <button
-          type="button"
-          className="profile-back-btn"
-          onClick={onBack}
-        >
-          ← Dashboard
-        </button>
-
-        <div className="profile-title">
-
-          <h1>
-            👤 My Profile
-          </h1>
-
-          <p>
-            Manage your account and
-            learning preferences
-          </p>
-
-        </div>
-
-      </header>
-
       <main className="profile-main">
 
-        {/* ============================= */}
-        {/* Profile Card */}
-        {/* ============================= */}
+        <div className="profile-page-heading">
+          <div>
+            <span>ACCOUNT</span>
+
+            <h1>👤 My Profile</h1>
+
+            <p>
+              Manage your account and learning preferences
+            </p>
+          </div>
+        </div>
 
         <section className="profile-card">
-
-          {/* Photo */}
 
           <div className="photo-area">
 
             <div className="profile-avatar">
 
               {photo ? (
-
                 <img
                   src={photo}
                   alt="Profile"
                 />
-
               ) : (
-
                 "👤"
-
               )}
 
             </div>
@@ -309,9 +230,7 @@ function Profile({ onBack, onLogout }) {
             <button
               type="button"
               className="change-photo-btn"
-              onClick={
-                openFilePicker
-              }
+              onClick={openFilePicker}
             >
               Change Photo
             </button>
@@ -320,202 +239,163 @@ function Profile({ onBack, onLogout }) {
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              onChange={
-                changePhoto
-              }
+              onChange={changePhoto}
               className="photo-input"
             />
 
             {photo && (
-
               <button
                 type="button"
                 className="remove-photo-btn"
-                onClick={
-                  removePhoto
-                }
+                onClick={removePhoto}
               >
-                Remove Photo
+                Remove
               </button>
-
             )}
 
           </div>
 
-          {/* Profile Information */}
-
           <div className="profile-info">
 
+            <span className="member-label">
+              STUDYGENIE MEMBER
+            </span>
+
             {editing ? (
-
-              <>
-
-                <label>
-                  Name
-                </label>
+              <div className="edit-fields">
 
                 <input
                   type="text"
                   value={name}
                   onChange={(e) =>
-                    setName(
-                      e.target.value
-                    )
+                    setName(e.target.value)
                   }
+                  placeholder="Name"
                 />
-
-                <label>
-                  Email
-                </label>
 
                 <input
                   type="email"
                   value={email}
                   onChange={(e) =>
-                    setEmail(
-                      e.target.value
-                    )
+                    setEmail(e.target.value)
                   }
+                  placeholder="Email"
                 />
 
-              </>
-
+              </div>
             ) : (
-
               <>
+                <h2>{name}</h2>
 
-                <h2>
-                  {name}
-                </h2>
+                <p>{email}</p>
 
-                <p>
-                  {email}
-                </p>
-
-                <span>
-                  {learningMode}
+                <span className="learning-badge">
+                  ✦ {learningMode}
                 </span>
-
               </>
-
             )}
 
           </div>
-
-          {/* Edit */}
 
           <button
             type="button"
             className="edit-profile-btn"
             onClick={() => {
-
               if (editing) {
                 saveProfile();
               } else {
                 setEditing(true);
               }
-
             }}
           >
-            {editing
-              ? "Save"
-              : "Edit Profile"}
+            {editing ? "Save Profile" : "Edit Profile"}
           </button>
 
         </section>
 
-        {/* ============================= */}
-        {/* Learning Preferences */}
-        {/* ============================= */}
-
         <section className="profile-section">
 
-          <h2>
-            Learning Preferences
-          </h2>
+          <div className="section-heading">
+            <span>PERSONALIZE</span>
+            <h2>Learning Preferences</h2>
+          </div>
 
-          <button
-            type="button"
-            className="preference-card"
-            onClick={
-              changeLearningMode
-            }
-          >
+          <div className="preferences-grid">
 
-            <div>
+            <button
+              type="button"
+              className="preference-card"
+              onClick={changeLearningMode}
+            >
+              <div className="preference-icon">
+                🎓
+              </div>
 
-              <strong>
-                🎓 Learning Mode
-              </strong>
+              <div className="preference-info">
+                <strong>Learning Mode</strong>
+                <p>{learningMode}</p>
+              </div>
 
-              <p>
-                {learningMode}
-              </p>
+              <span className="preference-action">
+                Change →
+              </span>
+            </button>
 
-            </div>
+            <button
+              type="button"
+              className="preference-card"
+              onClick={changeSubjects}
+            >
+              <div className="preference-icon blue">
+                📚
+              </div>
 
-            <span>
-              Change
-            </span>
+              <div className="preference-info">
+                <strong>Preferred Subjects</strong>
 
-          </button>
+                <p>
+                  {subjects.length > 0
+                    ? subjects.join(", ")
+                    : "No subjects added"}
+                </p>
+              </div>
 
-          <button
-            type="button"
-            className="preference-card"
-            onClick={
-              changeSubjects
-            }
-          >
+              <span className="subject-count">
+                {subjects.length}
+              </span>
+            </button>
 
-            <div>
-
-              <strong>
-                📚 Preferred Subjects
-              </strong>
-
-              <p>
-                {subjects.length > 0
-                  ? subjects.join(", ")
-                  : "No subjects added"}
-              </p>
-
-            </div>
-
-            <span>
-              {subjects.length}{" "}
-              Subjects
-            </span>
-
-          </button>
+          </div>
 
         </section>
 
-        {/* ============================= */}
-        {/* Account */}
-        {/* ============================= */}
+        <section className="profile-section account-section">
 
-        <section className="profile-section">
-
-          <h2>
-            Account
-          </h2>
+          <div className="section-heading">
+            <span>SECURITY</span>
+            <h2>Account Settings</h2>
+          </div>
 
           <div className="account-card">
 
             <button
               type="button"
+              className="account-action"
               onClick={() =>
-                setShowPassword(
-                  !showPassword
-                )
+                setShowPassword(!showPassword)
               }
             >
-              🔒 Change Password
+              🔒
+              <span>
+                <strong>Change Password</strong>
+                <small>
+                  Update your account password
+                </small>
+              </span>
+              <b>→</b>
             </button>
 
             {showPassword && (
-
               <div className="password-box">
 
                 <input
@@ -523,37 +403,28 @@ function Profile({ onBack, onLogout }) {
                   placeholder="New password"
                   value={password}
                   onChange={(e) =>
-                    setPassword(
-                      e.target.value
-                    )
+                    setPassword(e.target.value)
                   }
                 />
 
                 <input
                   type="password"
                   placeholder="Confirm password"
-                  value={
-                    confirmPassword
-                  }
+                  value={confirmPassword}
                   onChange={(e) =>
-                    setConfirmPassword(
-                      e.target.value
-                    )
+                    setConfirmPassword(e.target.value)
                   }
                 />
 
                 <button
                   type="button"
                   className="save-password-btn"
-                  onClick={
-                    savePassword
-                  }
+                  onClick={savePassword}
                 >
                   Save Password
                 </button>
 
               </div>
-
             )}
 
             <button
@@ -561,7 +432,7 @@ function Profile({ onBack, onLogout }) {
               className="logout-profile-btn"
               onClick={onLogout}
             >
-              🚪 Logout
+              ↪ Logout
             </button>
 
           </div>

@@ -1,538 +1,456 @@
 import { useEffect, useRef, useState } from "react";
 import "./AIAssistant.css";
 
-function AIAssistant({ onBack }) {
+function formatInline(text) {
+  const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
 
-  /* ============================= */
-  /* Initial AI Message */
-  /* ============================= */
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <strong key={index}>
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
 
-  const initialMessage = {
-    type: "ai",
-    text:
-      "Hello! 👋 I'm StudyGenie AI. Ask me anything about your studies.",
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return (
+        <code key={index}>
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+
+    return <span key={index}>{part}</span>;
+  });
+}
+
+function formatAIText(text) {
+  if (!text) return null;
+
+  const lines = text.replace(/\r/g, "").split("\n");
+
+  const elements = [];
+  let listItems = [];
+  let listType = null;
+  let codeLines = [];
+  let inCode = false;
+
+  const closeList = () => {
+    if (!listItems.length) return;
+
+    const ListTag = listType === "number" ? "ol" : "ul";
+
+    elements.push(
+      <ListTag key={`list-${elements.length}`}>
+        {listItems.map((item, index) => (
+          <li key={index}>{formatInline(item)}</li>
+        ))}
+      </ListTag>
+    );
+
+    listItems = [];
+    listType = null;
   };
 
+  const closeCode = () => {
+    if (!codeLines.length) return;
 
-  /* ============================= */
-  /* States */
-  /* ============================= */
+    elements.push(
+      <pre key={`code-${elements.length}`}>
+        <code>{codeLines.join("\n")}</code>
+      </pre>
+    );
+
+    codeLines = [];
+  };
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith("```")) {
+      closeList();
+
+      if (!inCode) {
+        inCode = true;
+      } else {
+        closeCode();
+        inCode = false;
+      }
+
+      return;
+    }
+
+    if (inCode) {
+      codeLines.push(line);
+      return;
+    }
+
+    if (!trimmed) {
+      closeList();
+      return;
+    }
+
+    if (/^---+$/.test(trimmed)) {
+      closeList();
+      return;
+    }
+
+    const headingMatch = trimmed.match(/^#{1,6}\s+(.+)/);
+
+    if (headingMatch) {
+      closeList();
+
+      elements.push(
+        <h3 key={`heading-${elements.length}`}>
+          {formatInline(
+            headingMatch[1]
+              .replace(/^#+\s*/, "")
+              .trim()
+          )}
+        </h3>
+      );
+
+      return;
+    }
+
+    const bulletMatch = trimmed.match(/^[-*•]\s+(.+)/);
+
+    if (bulletMatch) {
+      if (listType !== "bullet") {
+        closeList();
+        listType = "bullet";
+      }
+
+      listItems.push(bulletMatch[1]);
+      return;
+    }
+
+    const numberMatch = trimmed.match(/^\d+[.)]\s+(.+)/);
+
+    if (numberMatch) {
+      if (listType !== "number") {
+        closeList();
+        listType = "number";
+      }
+
+      listItems.push(numberMatch[1]);
+      return;
+    }
+
+    closeList();
+
+    elements.push(
+      <p key={`paragraph-${elements.length}`}>
+        {formatInline(trimmed)}
+      </p>
+    );
+  });
+
+  closeList();
+
+  if (inCode) {
+    closeCode();
+  }
+
+  return elements;
+}
+
+function AIAssistant() {
+  const initialMessage = {
+    type: "ai",
+    text: "Hello! 👋 I'm StudyGenie AI. Ask me anything about your studies.",
+  };
 
   const [question, setQuestion] = useState("");
 
   const [messages, setMessages] = useState(() => {
+    const saved = localStorage.getItem("studygenieChat");
 
-    const savedMessages =
-      localStorage.getItem("studygenieChat");
-
-    if (savedMessages) {
-
+    if (saved) {
       try {
-
-        const parsedMessages =
-          JSON.parse(savedMessages);
-
-        if (
-          Array.isArray(parsedMessages) &&
-          parsedMessages.length > 0
-        ) {
-          return parsedMessages;
-        }
-
+        return JSON.parse(saved);
       } catch {
         return [initialMessage];
       }
-
     }
 
     return [initialMessage];
-
   });
 
+  const [loading, setLoading] = useState(false);
 
-  /* ============================= */
-  /* Auto Scroll Ref */
-  /* ============================= */
-
-  const messagesEndRef = useRef(null);
-
-
-  /* ============================= */
-  /* Automatic Scroll */
-  /* ============================= */
+  const messagesRef = useRef(null);
 
   useEffect(() => {
-
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-    });
-
-  }, [messages]);
-
-
-  /* ============================= */
-  /* Get AI Answer */
-  /* ============================= */
-
-  const getAnswer = (text) => {
-
-    const question = text.toLowerCase();
-
-
-    /* Operating System */
-
-    if (
-      question.includes("operating system") ||
-      question.includes(" os ")
-    ) {
-
-      return (
-        "An Operating System is system software that manages " +
-        "computer hardware and software. Examples include " +
-        "Windows, Linux and macOS. It manages memory, files, " +
-        "processes and devices."
-      );
-
+    if (messagesRef.current) {
+      messagesRef.current.scrollTo({
+        top: messagesRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
+  }, [messages, loading]);
 
-
-    /* DBMS */
-
-    if (
-      question.includes("dbms") ||
-      question.includes("database")
-    ) {
-
-      return (
-        "DBMS stands for Database Management System. It is " +
-        "software used to store, organize and manage data. " +
-        "Examples include MySQL, Oracle and MongoDB."
-      );
-
-    }
-
-
-    /* Java */
-
-    if (question.includes("java")) {
-
-      return (
-        "Java is a popular object-oriented programming " +
-        "language. It is widely used for web applications, " +
-        "Android development, backend systems and enterprise " +
-        "software."
-      );
-
-    }
-
-
-    /* Computer Networks */
-
-    if (
-      question.includes("computer network") ||
-      question.includes("network")
-    ) {
-
-      return (
-        "A computer network is a group of connected devices " +
-        "that communicate and share resources. Common concepts " +
-        "include IP addresses, TCP/IP, routers, switches and " +
-        "protocols."
-      );
-
-    }
-
-
-    /* DSA */
-
-    if (
-      question.includes("dsa") ||
-      question.includes("data structure")
-    ) {
-
-      return (
-        "DSA stands for Data Structures and Algorithms. " +
-        "Data structures organize data efficiently, while " +
-        "algorithms are step-by-step methods used to solve " +
-        "problems."
-      );
-
-    }
-
-
-    /* React */
-
-    if (question.includes("react")) {
-
-      return (
-        "React is a JavaScript library used to build user " +
-        "interfaces. It uses reusable components and is " +
-        "commonly used for creating modern web applications."
-      );
-
-    }
-
-
-    /* HTML */
-
-    if (question.includes("html")) {
-
-      return (
-        "HTML stands for HyperText Markup Language. It is " +
-        "used to create the structure of web pages using " +
-        "elements such as headings, paragraphs, buttons, " +
-        "images and links."
-      );
-
-    }
-
-
-    /* CSS */
-
-    if (question.includes("css")) {
-
-      return (
-        "CSS stands for Cascading Style Sheets. It is used " +
-        "to control the appearance of web pages, including " +
-        "colors, spacing, layouts, fonts and responsive design."
-      );
-
-    }
-
-
-    /* JavaScript */
-
-    if (
-      question.includes("javascript") ||
-      question.includes(" js ")
-    ) {
-
-      return (
-        "JavaScript is a programming language used to make " +
-        "websites interactive. It can handle events, update " +
-        "page content, work with APIs and build complete " +
-        "web applications."
-      );
-
-    }
-
-
-    /* Greetings */
-
-    if (
-      question.includes("hello") ||
-      question.includes("hi") ||
-      question.includes("hey")
-    ) {
-
-      return (
-        "Hello! 👋 I'm ready to help you with your studies. " +
-        "You can ask me about Java, DBMS, Operating System, " +
-        "DSA, Computer Networks or other CS topics."
-      );
-
-    }
-
-
-    /* Thanks */
-
-    if (question.includes("thank")) {
-
-      return (
-        "You're welcome! 😊 Keep learning and keep practicing."
-      );
-
-    }
-
-
-    /* Default */
-
-    return (
-      "That's a good question! 😊 Try asking me about a " +
-      "specific topic such as Java, DBMS, Operating System, " +
-      "DSA, Computer Networks, React, HTML or CSS. " +
-      "I'll explain it in simple words."
-    );
-
-  };
-
-
-  /* ============================= */
-  /* Send Message */
-  /* ============================= */
-
-  const sendMessage = (e) => {
-
+  const sendMessage = async (e) => {
     e.preventDefault();
 
     const text = question.trim();
 
-    if (!text) {
-      return;
-    }
-
+    if (!text || loading) return;
 
     const userMessage = {
       type: "user",
-      text: text,
+      text,
     };
 
-
-    const aiMessage = {
-      type: "ai",
-      text: getAnswer(text),
-    };
-
-
-    const updatedMessages = [
-      ...messages,
+    setMessages((prev) => [
+      ...prev,
       userMessage,
-      aiMessage,
-    ];
-
-
-    /* Update UI */
-
-    setMessages(updatedMessages);
-
-
-    /* Save Chat */
-
-    localStorage.setItem(
-      "studygenieChat",
-      JSON.stringify(updatedMessages)
-    );
-
-
-    /* Clear Input */
+    ]);
 
     setQuestion("");
+    setLoading(true);
 
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: text,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "AI request failed"
+        );
+      }
+
+      const aiMessage = {
+        type: "ai",
+        text: data.reply,
+      };
+
+      setMessages((prev) => {
+        const updated = [...prev, aiMessage];
+
+        localStorage.setItem(
+          "studygenieChat",
+          JSON.stringify(updated)
+        );
+
+        return updated;
+      });
+    } catch (error) {
+      console.error("AI Error:", error);
+
+      const errorMessage = {
+        type: "ai",
+        text:
+          "Sorry, I couldn't connect to the AI server. Please try again.",
+      };
+
+      setMessages((prev) => [
+        ...prev,
+        errorMessage,
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-
-  /* ============================= */
-  /* Clear Complete Chat */
-  /* ============================= */
-
-  const clearChat = () => {
-
-    const freshChat = [
-      initialMessage
-    ];
-
-
-    setMessages(freshChat);
-
+  const newChat = () => {
+    setMessages([initialMessage]);
 
     localStorage.setItem(
       "studygenieChat",
-      JSON.stringify(freshChat)
+      JSON.stringify([initialMessage])
     );
-
   };
 
-
-  /* ============================= */
-  /* JSX */
-  /* ============================= */
-
   return (
+    <main className="assistant-content">
 
-    <div className="ai-page">
+      <div className="assistant-top-section">
+        <div>
+          <span className="assistant-label">
+            AI LEARNING
+          </span>
 
+          <h1>Smart AI Assistant</h1>
 
-      {/* ============================= */}
-      {/* Header */}
-      {/* ============================= */}
-
-      <header className="ai-header">
-
-
-        {/* Back */}
+          <p>
+            Ask questions, understand concepts and learn faster with
+            your personal study assistant.
+          </p>
+        </div>
 
         <button
-          type="button"
-          className="ai-back-btn"
-          onClick={onBack}
+          className="new-chat-btn"
+          onClick={newChat}
         >
-          ← Dashboard
+          <span>✦</span>
+          New Chat
         </button>
+      </div>
 
+      <div className="chat-card">
 
-        {/* AI Title */}
+        <div className="chat-header">
 
-        <div className="ai-title">
+          <div className="chat-title">
 
+            <div className="chat-ai-icon">
+              ✦
+            </div>
 
-          <div className="ai-avatar">
-            🤖
+            <div>
+              <strong>StudyGenie AI</strong>
+
+              <span>
+                <i></i>
+                Online
+              </span>
+            </div>
+
           </div>
 
-
-          <div>
-
-            <h1>
-              StudyGenie AI
-            </h1>
-
-            <p>
-              Your personal AI study assistant
-            </p>
-
-          </div>
-
+          <span className="chat-status">
+            AI Assistant
+          </span>
 
         </div>
 
+        <div
+          className="messages"
+          ref={messagesRef}
+        >
 
-        {/* Status */}
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`assistant-message ${
+                message.type === "user"
+                  ? "assistant-user-message"
+                  : "assistant-ai-message"
+              }`}
+            >
 
-        <div className="ai-status">
+              {message.type === "ai" && (
+                <div className="message-avatar">
+                  ✦
+                </div>
+              )}
 
-          <span></span>
+              <div className="message-content">
 
-          Online
-
-
-          {/* Clear Chat */}
-
-          <button
-            type="button"
-            className="clear-chat-btn"
-            onClick={clearChat}
-          >
-            🗑️ Clear Chat
-          </button>
-
-        </div>
-
-
-      </header>
-
-
-
-      {/* ============================= */}
-      {/* Main */}
-      {/* ============================= */}
-
-      <main className="ai-main">
-
-
-        <div className="chat-container">
-
-
-          {/* ============================= */}
-          {/* Messages */}
-          {/* ============================= */}
-
-          <div className="messages">
-
-
-            {messages.map((message, index) => (
-
-              <div
-                key={index}
-                className={`chat-message ${
-                  message.type === "user"
-                    ? "user-chat"
-                    : "ai-chat"
-                }`}
-              >
-
-
-                {/* AI Avatar */}
-
-                {message.type === "ai" && (
-
-                  <div className="message-avatar">
-                    🤖
-                  </div>
-
-                )}
-
-
-                {/* Message */}
-
-                <div className="message-content">
-
-                  {message.text}
-
+                <div className="message-name">
+                  {message.type === "ai"
+                    ? "StudyGenie AI"
+                    : "You"}
                 </div>
 
+                <div className="message-bubble">
+                  {message.type === "ai"
+                    ? formatAIText(message.text)
+                    : message.text}
+                </div>
+
+                <small>
+                  {message.type === "ai"
+                    ? "AI Assistant"
+                    : "You"}
+                  {" • "}
+                  {new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </small>
 
               </div>
 
-            ))}
+              {message.type === "user" && (
+                <div className="message-avatar user-avatar">
+                  👤
+                </div>
+              )}
 
+            </div>
+          ))}
 
-            {/* ============================= */}
-            {/* Auto Scroll Target */}
-            {/* ============================= */}
+          {loading && (
+            <div className="assistant-message assistant-ai-message">
 
-            <div ref={messagesEndRef}></div>
+              <div className="message-avatar">
+                ✦
+              </div>
 
+              <div className="message-content">
 
-          </div>
+                <div className="message-name">
+                  StudyGenie AI
+                </div>
 
+                <div className="message-bubble typing">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
 
+              </div>
 
-          {/* ============================= */}
-          {/* Input */}
-          {/* ============================= */}
-
-          <form
-            className="ai-input-area"
-            onSubmit={sendMessage}
-          >
-
-
-            <input
-              type="text"
-              placeholder="Ask anything about your studies..."
-              value={question}
-              onChange={(e) =>
-                setQuestion(e.target.value)
-              }
-            />
-
-
-            <button
-              type="submit"
-              disabled={!question.trim()}
-              title="Send message"
-            >
-              ➤
-            </button>
-
-
-          </form>
-
-
-
-          {/* ============================= */}
-          {/* Disclaimer */}
-          {/* ============================= */}
-
-          <p className="ai-disclaimer">
-
-            StudyGenie AI can make mistakes.
-            Always verify important information.
-
-          </p>
-
+            </div>
+          )}
 
         </div>
 
+        <form
+          className="assistant-input"
+          onSubmit={sendMessage}
+        >
 
-      </main>
+          <input
+            type="text"
+            placeholder="Ask StudyGenie anything..."
+            value={question}
+            onChange={(e) =>
+              setQuestion(e.target.value)
+            }
+            disabled={loading}
+          />
 
+          <button
+            type="button"
+            className="attach-btn"
+          >
+            📎
+          </button>
 
-    </div>
+          <button
+            type="submit"
+            className="send-btn"
+            disabled={loading}
+          >
+            ➤
+          </button>
 
+        </form>
+
+        <div className="chat-footer">
+          StudyGenie AI can help you understand and practice your subjects.
+        </div>
+
+      </div>
+
+    </main>
   );
-
 }
 
 export default AIAssistant;

@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import "./Dashboard.css";
 
-function Dashboard({
-  onLogout,
-  onOpenAI,
-  onOpenNotes,
-  onOpenQuiz,
-  onOpenProgress,
-  onOpenProfile,
-}) {
+import AIAssistant from "./AIAssistant";
+import Notes from "./Notes";
+import Profile from "./Profile";
+import Progress from "./Progress";
+import Quiz from "./Quiz";
+
+function Dashboard({ onLogout }) {
+  const [activePage, setActivePage] = useState("dashboard");
+
   const [notes, setNotes] = useState([]);
   const [quizHistory, setQuizHistory] = useState([]);
+
   const [profile, setProfile] = useState({
     name: "Student",
     email: "student@example.com",
@@ -20,22 +22,11 @@ function Dashboard({
 
   const [photo, setPhoto] = useState("");
 
-  /* ============================= */
-  /* Load Dashboard Data */
-  /* ============================= */
-
   useEffect(() => {
     loadDashboardData();
 
-    window.addEventListener(
-      "studygenie-update",
-      loadDashboardData
-    );
-
-    window.addEventListener(
-      "storage",
-      loadDashboardData
-    );
+    window.addEventListener("studygenie-update", loadDashboardData);
+    window.addEventListener("storage", loadDashboardData);
 
     return () => {
       window.removeEventListener(
@@ -51,10 +42,7 @@ function Dashboard({
   }, []);
 
   const loadDashboardData = () => {
-    /* Notes */
-
-    const savedNotes =
-      localStorage.getItem("studygenieNotes");
+    const savedNotes = localStorage.getItem("studygenieNotes");
 
     if (savedNotes) {
       try {
@@ -66,10 +54,7 @@ function Dashboard({
       setNotes([]);
     }
 
-    /* Quiz History */
-
-    const savedHistory =
-      localStorage.getItem("quizHistory");
+    const savedHistory = localStorage.getItem("quizHistory");
 
     if (savedHistory) {
       try {
@@ -81,18 +66,12 @@ function Dashboard({
       setQuizHistory([]);
     }
 
-    /* Profile */
-
     const savedProfile =
-      localStorage.getItem(
-        "studygenieProfile"
-      );
+      localStorage.getItem("studygenieProfile");
 
     if (savedProfile) {
       try {
-        setProfile(
-          JSON.parse(savedProfile)
-        );
+        setProfile(JSON.parse(savedProfile));
       } catch {
         setProfile({
           name: "Student",
@@ -103,33 +82,18 @@ function Dashboard({
       }
     }
 
-    /* Photo */
-
-    setPhoto(
-      localStorage.getItem(
-        "profilePhoto"
-      ) || ""
-    );
+    setPhoto(localStorage.getItem("profilePhoto") || "");
   };
 
-  /* ============================= */
-  /* Statistics */
-  /* ============================= */
-
   const topicsStudied = notes.length;
-
-  const quizzesCompleted =
-    quizHistory.length;
+  const quizzesCompleted = quizHistory.length;
 
   const averageScore =
     quizzesCompleted > 0
       ? Math.round(
           quizHistory.reduce(
             (total, quiz) =>
-              total +
-              Number(
-                quiz.percentage || 0
-              ),
+              total + Number(quiz.percentage || 0),
             0
           ) / quizzesCompleted
         )
@@ -138,18 +102,11 @@ function Dashboard({
   const bestScore =
     quizzesCompleted > 0
       ? Math.max(
-          ...quizHistory.map(
-            (quiz) =>
-              Number(
-                quiz.percentage || 0
-              )
+          ...quizHistory.map((quiz) =>
+            Number(quiz.percentage || 0)
           )
         )
       : 0;
-
-  /* ============================= */
-  /* Learning Streak */
-  /* ============================= */
 
   const getDateKey = (date) => {
     return `${date.getFullYear()}-${String(
@@ -164,37 +121,23 @@ function Dashboard({
       return null;
     }
 
-    const parts =
-      quiz.date.split("/");
+    const parts = quiz.date.split("/");
 
     if (parts.length !== 3) {
       return null;
     }
 
-    const month =
-      Number(parts[0]);
+    const month = Number(parts[0]);
+    const day = Number(parts[1]);
+    const year = Number(parts[2]);
 
-    const day =
-      Number(parts[1]);
-
-    const year =
-      Number(parts[2]);
-
-    if (
-      !month ||
-      !day ||
-      !year
-    ) {
+    if (!month || !day || !year) {
       return null;
     }
 
-    const date = new Date(
-      year,
-      month - 1,
-      day
+    return getDateKey(
+      new Date(year, month - 1, day)
     );
-
-    return getDateKey(date);
   };
 
   const activityDates = [
@@ -206,69 +149,45 @@ function Dashboard({
   ];
 
   const calculateStreak = () => {
-    if (
-      activityDates.length === 0
-    ) {
+    if (activityDates.length === 0) {
       return 0;
     }
 
     const today = new Date();
 
-    today.setHours(
-      0,
-      0,
-      0,
-      0
-    );
+    today.setHours(0, 0, 0, 0);
 
-    const todayKey =
-      getDateKey(today);
+    const todayKey = getDateKey(today);
 
-    const yesterday =
-      new Date(today);
+    const yesterday = new Date(today);
 
     yesterday.setDate(
       yesterday.getDate() - 1
     );
 
-    const yesterdayKey =
-      getDateKey(yesterday);
+    const yesterdayKey = getDateKey(yesterday);
 
     if (
-      !activityDates.includes(
-        todayKey
-      ) &&
-      !activityDates.includes(
-        yesterdayKey
-      )
+      !activityDates.includes(todayKey) &&
+      !activityDates.includes(yesterdayKey)
     ) {
       return 0;
     }
 
     let streak = 0;
 
-    const currentDate =
-      new Date(today);
+    const currentDate = new Date(today);
 
-    if (
-      !activityDates.includes(
-        todayKey
-      )
-    ) {
+    if (!activityDates.includes(todayKey)) {
       currentDate.setDate(
         currentDate.getDate() - 1
       );
     }
 
     while (true) {
-      const key =
-        getDateKey(
-          currentDate
-        );
+      const key = getDateKey(currentDate);
 
-      if (
-        !activityDates.includes(key)
-      ) {
+      if (!activityDates.includes(key)) {
         break;
       }
 
@@ -282,12 +201,7 @@ function Dashboard({
     return streak;
   };
 
-  const learningStreak =
-    calculateStreak();
-
-  /* ============================= */
-  /* Latest Activity */
-  /* ============================= */
+  const learningStreak = calculateStreak();
 
   const latestQuiz =
     quizHistory.length > 0
@@ -299,129 +213,499 @@ function Dashboard({
       ? notes[0]
       : null;
 
+  const navigate = (page) => {
+    setActivePage(page);
+  };
+
+  const renderPageContent = () => {
+    if (activePage === "ai") {
+      return <AIAssistant />;
+    }
+
+    if (activePage === "notes") {
+      return <Notes />;
+    }
+
+    if (activePage === "quiz") {
+      return <Quiz />;
+    }
+
+    if (activePage === "progress") {
+      return <Progress />;
+    }
+
+    if (activePage === "profile") {
+      return (
+        <Profile
+          onLogout={onLogout}
+        />
+      );
+    }
+
+    if (activePage === "books") {
+      return (
+        <section className="dashboard-content">
+          <div className="welcome-section">
+            <div>
+              <h1>Books</h1>
+              <p>
+                Your study books and learning resources.
+              </p>
+            </div>
+          </div>
+
+          <div className="empty-activity">
+            <span>📚</span>
+            <strong>Books Coming Soon</strong>
+            <p>
+              StudyGenie books section will be available soon.
+            </p>
+          </div>
+        </section>
+      );
+    }
+
+    return (
+      <div className="dashboard-content">
+
+        <section className="welcome-section">
+
+          <div>
+            <h1>
+              Welcome Back, {profile.name}!
+            </h1>
+
+            <p>
+              Keep learning, keep growing. You can do it! 🚀
+            </p>
+          </div>
+
+        </section>
+
+        <section className="stats">
+
+          <div className="stat-card">
+
+            <div className="stat-icon purple">
+              ▣
+            </div>
+
+            <div>
+              <h3>{topicsStudied}</h3>
+              <p>Notes Created</p>
+            </div>
+
+          </div>
+
+          <div className="stat-card">
+
+            <div className="stat-icon green">
+              ▤
+            </div>
+
+            <div>
+              <h3>{quizzesCompleted}</h3>
+              <p>Quizzes Taken</p>
+            </div>
+
+          </div>
+
+          <div className="stat-card">
+
+            <div className="stat-icon blue">
+              ▫
+            </div>
+
+            <div>
+              <h3>
+                {profile.subjects?.length || 0}
+              </h3>
+
+              <p>Subjects</p>
+            </div>
+
+          </div>
+
+          <div className="stat-card">
+
+            <div className="stat-icon orange">
+              ★
+            </div>
+
+            <div>
+              <h3>{averageScore}%</h3>
+              <p>Overall Progress</p>
+            </div>
+
+          </div>
+
+        </section>
+
+        <section className="dashboard-grid">
+
+          <div className="activity-card">
+
+            <div className="card-heading">
+
+              <div>
+                <h2>Recent Activity</h2>
+                <p>
+                  Your latest learning activities
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => navigate("progress")}
+              >
+                View All
+              </button>
+
+            </div>
+
+            <div className="activity-list">
+
+              {latestNote && (
+                <div className="activity-item">
+
+                  <div className="activity-icon green">
+                    ▣
+                  </div>
+
+                  <div className="activity-info">
+
+                    <strong>
+                      Created a new note
+                    </strong>
+
+                    <span>
+                      {latestNote.title}
+                    </span>
+
+                  </div>
+
+                  <small>
+                    Recently
+                  </small>
+
+                </div>
+              )}
+
+              {latestQuiz && (
+                <div className="activity-item">
+
+                  <div className="activity-icon blue">
+                    ✓
+                  </div>
+
+                  <div className="activity-info">
+
+                    <strong>
+                      Completed a quiz
+                    </strong>
+
+                    <span>
+                      {latestQuiz.quizName}
+                    </span>
+
+                  </div>
+
+                  <small>
+                    {latestQuiz.percentage}%
+                  </small>
+
+                </div>
+              )}
+
+              {!latestNote && !latestQuiz && (
+                <div className="empty-activity">
+
+                  <span>📚</span>
+
+                  <strong>
+                    No activity yet
+                  </strong>
+
+                  <p>
+                    Start studying to see your activity here.
+                  </p>
+
+                </div>
+              )}
+
+            </div>
+
+          </div>
+
+          <div className="study-progress-card">
+
+            <div className="card-heading">
+
+              <div>
+                <h2>Study Progress</h2>
+
+                <p>
+                  Your overall performance
+                </p>
+              </div>
+
+            </div>
+
+            <div className="progress-circle">
+
+              <div className="circle-inner">
+
+                <strong>
+                  {averageScore}%
+                </strong>
+
+                <span>
+                  Progress
+                </span>
+
+              </div>
+
+            </div>
+
+            <div className="progress-details">
+
+              <div>
+
+                <span>
+                  <i className="dot purple"></i>
+                  Notes
+                </span>
+
+                <strong>
+                  {notes.length}
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  <i className="dot green"></i>
+                  Quizzes
+                </span>
+
+                <strong>
+                  {quizzesCompleted}
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  <i className="dot blue"></i>
+                  Best Score
+                </span>
+
+                <strong>
+                  {bestScore}%
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <section className="ai-box">
+
+          <div className="ai-box-icon">
+            ✦
+          </div>
+
+          <div className="ai-box-text">
+
+            <h3>
+              Need help with your studies?
+            </h3>
+
+            <p>
+              Ask your AI Assistant anything.
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            onClick={() => navigate("ai")}
+          >
+            Go to AI Assistant
+            <span>→</span>
+          </button>
+
+        </section>
+
+      </div>
+    );
+  };
+
   return (
     <div className="dashboard">
-
-      {/* ============================= */}
-      {/* Sidebar */}
-      {/* ============================= */}
 
       <aside className="sidebar">
 
         <div className="dashboard-logo">
-          🎓 StudyGenie
-        </div>
 
-        <div className="menu">
+          <span className="logo-icon">
+            ◆
+          </span>
 
-          <button
-            type="button"
-            className="active"
-          >
-            🏠 Dashboard
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenAI}
-          >
-            🤖 AI Assistant
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenNotes}
-          >
-            📄 My Notes
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenQuiz}
-          >
-            📝 Quiz
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenProgress}
-          >
-            📊 Progress
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenProfile}
-          >
-            👤 Profile
-          </button>
+          <span>
+            StudyGenie <b>AI</b>
+          </span>
 
         </div>
+
+        <nav className="menu">
+
+          <button
+            type="button"
+            className={
+              activePage === "dashboard"
+                ? "active"
+                : ""
+            }
+            onClick={() => navigate("dashboard")}
+          >
+            <span>⌂</span>
+            Dashboard
+          </button>
+
+          <button
+            type="button"
+            className={
+              activePage === "ai"
+                ? "active"
+                : ""
+            }
+            onClick={() => navigate("ai")}
+          >
+            <span>✧</span>
+            AI Assistant
+          </button>
+
+          <button
+            type="button"
+            className={
+              activePage === "notes"
+                ? "active"
+                : ""
+            }
+            onClick={() => navigate("notes")}
+          >
+            <span>▤</span>
+            Notes
+          </button>
+
+          <button
+            type="button"
+            className={
+              activePage === "quiz"
+                ? "active"
+                : ""
+            }
+            onClick={() => navigate("quiz")}
+          >
+            <span>□</span>
+            Quiz
+          </button>
+
+          <button
+            type="button"
+            className={
+              activePage === "progress"
+                ? "active"
+                : ""
+            }
+            onClick={() => navigate("progress")}
+          >
+            <span>⌁</span>
+            Progress
+          </button>
+
+          <button
+            type="button"
+            className={
+              activePage === "books"
+                ? "active"
+                : ""
+            }
+            onClick={() => navigate("books")}
+          >
+            <span>▥</span>
+            Books
+          </button>
+
+          <button
+            type="button"
+            className={
+              activePage === "profile"
+                ? "active"
+                : ""
+            }
+            onClick={() => navigate("profile")}
+          >
+            <span>♙</span>
+            Profile
+          </button>
+
+        </nav>
 
         <button
           type="button"
           className="logout-btn"
           onClick={onLogout}
         >
-          🚪 Logout
+          <span>↪</span>
+          Logout
         </button>
 
       </aside>
 
-      {/* ============================= */}
-      {/* Main */}
-      {/* ============================= */}
-
       <main className="dashboard-main">
-
-        {/* Header */}
 
         <header className="dashboard-header">
 
-          <div>
+          <div className="search-box">
 
-            <h1>
-              Hello, {profile.name} 👋
-            </h1>
+            <span>⌕</span>
 
-            <p>
-              Let's continue your
-              learning journey.
-            </p>
+            <input
+              type="text"
+              placeholder="Search anything..."
+            />
 
           </div>
 
           <div
             className="profile"
-            onClick={onOpenProfile}
-            style={{
-              cursor: "pointer",
-            }}
+            onClick={() => navigate("profile")}
           >
 
-            {photo ? (
+            <div className="profile-photo">
 
-              <img
-                src={photo}
-                alt="Profile"
-                style={{
-                  width: "42px",
-                  height: "42px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
+              {photo ? (
+                <img
+                  src={photo}
+                  alt="Profile"
+                />
+              ) : (
+                <span>👤</span>
+              )}
 
-            ) : (
+            </div>
 
-              <span>👤</span>
-
-            )}
-
-            <div>
+            <div className="profile-text">
 
               <strong>
-                {profile.name}
+                Hi, {profile.name}
               </strong>
 
               <small>
@@ -430,466 +714,15 @@ function Dashboard({
 
             </div>
 
+            <span className="profile-dot">
+              ●
+            </span>
+
           </div>
 
         </header>
 
-        {/* ============================= */}
-        {/* Stats */}
-        {/* ============================= */}
-
-        <section className="stats">
-
-          <div className="stat-card">
-
-            <span>📚</span>
-
-            <div>
-
-              <h3>
-                {topicsStudied}
-              </h3>
-
-              <p>
-                Topics Studied
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="stat-card">
-
-            <span>📝</span>
-
-            <div>
-
-              <h3>
-                {quizzesCompleted}
-              </h3>
-
-              <p>
-                Quizzes Completed
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="stat-card">
-
-            <span>⭐</span>
-
-            <div>
-
-              <h3>
-                {averageScore}%
-              </h3>
-
-              <p>
-                Average Score
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="stat-card">
-
-            <span>🔥</span>
-
-            <div>
-
-              <h3>
-                {learningStreak}
-              </h3>
-
-              <p>
-                Day Learning Streak
-              </p>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* ============================= */}
-        {/* AI Banner */}
-        {/* ============================= */}
-
-        <section className="ai-box">
-
-          <div>
-
-            <span className="ai-icon">
-              🤖
-            </span>
-
-            <div>
-
-              <h2>
-                Need help with
-                your studies?
-              </h2>
-
-              <p>
-                Ask StudyGenie AI
-                anything about your
-                subjects.
-              </p>
-
-            </div>
-
-          </div>
-
-          <button
-            type="button"
-            onClick={onOpenAI}
-          >
-            Ask AI →
-          </button>
-
-        </section>
-
-        {/* ============================= */}
-        {/* Performance Summary */}
-        {/* ============================= */}
-
-        <section className="dashboard-section">
-
-          <div className="section-title">
-
-            <h2>
-              Your Learning Summary
-            </h2>
-
-            <p>
-              A quick look at your
-              performance
-            </p>
-
-          </div>
-
-          <div className="quick-grid">
-
-            <div className="quick-card">
-
-              <span>🏆</span>
-
-              <h3>
-                Best Score
-              </h3>
-
-              <p>
-                Your highest quiz
-                score so far.
-              </p>
-
-              <strong>
-                {bestScore}%
-              </strong>
-
-            </div>
-
-            <div className="quick-card">
-
-              <span>🔥</span>
-
-              <h3>
-                Current Streak
-              </h3>
-
-              <p>
-                Keep learning every
-                day to increase it.
-              </p>
-
-              <strong>
-                {learningStreak} Days
-              </strong>
-
-            </div>
-
-            <div className="quick-card">
-
-              <span>📄</span>
-
-              <h3>
-                Study Notes
-              </h3>
-
-              <p>
-                Your saved study
-                materials.
-              </p>
-
-              <strong>
-                {notes.length} Notes
-              </strong>
-
-            </div>
-
-            <div className="quick-card">
-
-              <span>🎯</span>
-
-              <h3>
-                Average
-              </h3>
-
-              <p>
-                Your overall quiz
-                performance.
-              </p>
-
-              <strong>
-                {averageScore}%
-              </strong>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* ============================= */}
-        {/* Quick Access */}
-        {/* ============================= */}
-
-        <section className="dashboard-section">
-
-          <div className="section-title">
-
-            <h2>
-              Quick Access
-            </h2>
-
-            <p>
-              Choose what you want
-              to do
-            </p>
-
-          </div>
-
-          <div className="quick-grid">
-
-            <div className="quick-card">
-
-              <span>🤖</span>
-
-              <h3>
-                AI Assistant
-              </h3>
-
-              <p>
-                Ask questions and
-                get instant
-                explanations.
-              </p>
-
-              <button
-                type="button"
-                onClick={onOpenAI}
-              >
-                Open →
-              </button>
-
-            </div>
-
-            <div className="quick-card">
-
-              <span>📄</span>
-
-              <h3>
-                Study Notes
-              </h3>
-
-              <p>
-                Read and manage your
-                study materials.
-              </p>
-
-              <button
-                type="button"
-                onClick={onOpenNotes}
-              >
-                Open →
-              </button>
-
-            </div>
-
-            <div className="quick-card">
-
-              <span>📝</span>
-
-              <h3>
-                Take Quiz
-              </h3>
-
-              <p>
-                Test your knowledge
-                with practice
-                questions.
-              </p>
-
-              <button
-                type="button"
-                onClick={onOpenQuiz}
-              >
-                Start →
-              </button>
-
-            </div>
-
-            <div className="quick-card">
-
-              <span>📊</span>
-
-              <h3>
-                My Progress
-              </h3>
-
-              <p>
-                Check your learning
-                performance.
-              </p>
-
-              <button
-                type="button"
-                onClick={onOpenProgress}
-              >
-                View →
-              </button>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* ============================= */}
-        {/* Recent Activity */}
-        {/* ============================= */}
-
-        <section className="recent">
-
-          <div className="section-title">
-
-            <h2>
-              Recent Activity
-            </h2>
-
-            <p>
-              Your latest learning
-              activities
-            </p>
-
-          </div>
-
-          {/* Quiz */}
-
-          {latestQuiz ? (
-
-            <div className="activity">
-
-              <span>📝</span>
-
-              <div>
-
-                <strong>
-                  {latestQuiz.quizName}
-                </strong>
-
-                <p>
-                  Score:{" "}
-                  {latestQuiz.percentage}%
-                  {latestQuiz.date
-                    ? ` • ${latestQuiz.date}`
-                    : ""}
-                </p>
-
-              </div>
-
-              <span className="completed">
-                Completed
-              </span>
-
-            </div>
-
-          ) : (
-
-            <div className="activity">
-
-              <span>📝</span>
-
-              <div>
-
-                <strong>
-                  No quiz completed yet
-                </strong>
-
-                <p>
-                  Start your first quiz
-                  to see activity here.
-                </p>
-
-              </div>
-
-            </div>
-
-          )}
-
-          {/* Note */}
-
-          {latestNote ? (
-
-            <div className="activity">
-
-              <span>📘</span>
-
-              <div>
-
-                <strong>
-                  {latestNote.title}
-                </strong>
-
-                <p>
-                  {latestNote.subject}
-                </p>
-
-              </div>
-
-              <span className="completed">
-                Saved
-              </span>
-
-            </div>
-
-          ) : (
-
-            <div className="activity">
-
-              <span>📘</span>
-
-              <div>
-
-                <strong>
-                  No notes added yet
-                </strong>
-
-                <p>
-                  Add your first study
-                  note.
-                </p>
-
-              </div>
-
-            </div>
-
-          )}
-
-        </section>
+        {renderPageContent()}
 
       </main>
 
