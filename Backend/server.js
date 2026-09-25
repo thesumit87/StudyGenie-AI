@@ -28,7 +28,7 @@ const ai = new GoogleGenAI({
   httpOptions: {
     timeout: 30000,
     retryOptions: {
-      attempts: 3,
+      attempts: 2,
     },
   },
 });
@@ -52,6 +52,78 @@ Do not give unnecessarily long answers.
 Give examples when useful.
 `;
 
+const models = [
+  "gemini-3.8-flash",
+  "gemini-3.5-flash-lite",
+];
+
+const wait = (ms) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+function isTemporaryError(error) {
+  const message = JSON.stringify(error).toLowerCase();
+
+  return (
+    message.includes("503") ||
+    message.includes("unavailable") ||
+    message.includes("high demand") ||
+    message.includes("429") ||
+    message.includes("too many requests") ||
+    message.includes("408") ||
+    message.includes("timeout") ||
+    message.includes("internal")
+  );
+}
+
+async function generateAIResponse(contents, maxOutputTokens = 1000) {
+  let lastError;
+
+  for (const model of models) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        console.log(
+          `Trying model: ${model} | Attempt: ${attempt}`
+        );
+
+        const response = await ai.models.generateContent({
+          model,
+          contents,
+          config: {
+            systemInstruction,
+            thinkingConfig: {
+              thinkingLevel: "low",
+            },
+            maxOutputTokens,
+          },
+        });
+
+        console.log(`AI response received from ${model}`);
+
+        return response;
+      } catch (error) {
+        lastError = error;
+
+        console.error(
+          `ERROR with ${model}, attempt ${attempt}:`,
+          error?.message || error
+        );
+
+        if (!isTemporaryError(error)) {
+          break;
+        }
+
+        if (attempt < 2) {
+          await wait(1500 * attempt);
+        }
+      }
+    }
+
+    console.log(`Trying fallback model after ${model}`);
+  }
+
+  throw lastError;
+}
+
 app.get("/", (req, res) => {
   res.json({
     success: true,
@@ -61,17 +133,10 @@ app.get("/", (req, res) => {
 
 app.get("/api/test", async (req, res) => {
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3.8-flash",
-      contents: "Say hello in one short sentence.",
-      config: {
-        systemInstruction,
-        thinkingConfig: {
-          thinkingLevel: "low",
-        },
-        maxOutputTokens: 500,
-      },
-    });
+    const response = await generateAIResponse(
+      "Say hello in one short sentence.",
+      500
+    );
 
     res.json({
       success: true,
@@ -83,7 +148,7 @@ app.get("/api/test", async (req, res) => {
     res.status(503).json({
       success: false,
       error:
-        "Gemini is temporarily unavailable. Please try again.",
+        "AI service is temporarily unavailable. Please try again.",
     });
   }
 });
@@ -101,25 +166,14 @@ app.post("/api/chat", async (req, res) => {
 
     console.log("Question:", message);
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.8-flash",
-      contents: message.trim(),
-      config: {
-        systemInstruction,
-        thinkingConfig: {
-          thinkingLevel: "low",
-        },
-        maxOutputTokens: 1000,
-      },
-    });
-
-    const reply = response.text;
-
-    console.log("AI response received");
+    const response = await generateAIResponse(
+      message.trim(),
+      1000
+    );
 
     res.json({
       success: true,
-      reply,
+      reply: response.text,
     });
   } catch (error) {
     console.error("CHAT ERROR:", error);
@@ -127,7 +181,7 @@ app.post("/api/chat", async (req, res) => {
     res.status(503).json({
       success: false,
       error:
-        "Gemini is temporarily unavailable. Please try again.",
+        "AI service is temporarily unavailable. Please try again.",
     });
   }
 });
