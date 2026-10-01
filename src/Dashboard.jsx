@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Dashboard.css";
 
+import DashboardLayout from "./DashboardLayout";
 import AIAssistant from "./AIAssistant";
 import Notes from "./Notes";
 import Profile from "./Profile";
@@ -248,6 +249,7 @@ function Dashboard({ onLogout }) {
           <div className="welcome-section">
             <div>
               <h1>Books</h1>
+
               <p>
                 Your study books and learning resources.
               </p>
@@ -256,7 +258,9 @@ function Dashboard({ onLogout }) {
 
           <div className="empty-activity">
             <span>📚</span>
+
             <strong>Books Coming Soon</strong>
+
             <p>
               StudyGenie books section will be available soon.
             </p>
@@ -349,6 +353,7 @@ function Dashboard({ onLogout }) {
 
               <div>
                 <h2>Recent Activity</h2>
+
                 <p>
                   Your latest learning activities
                 </p>
@@ -546,187 +551,43 @@ function Dashboard({ onLogout }) {
     );
   };
 
+  const activePageName =
+    activePage === "dashboard"
+      ? "Dashboard"
+      : activePage === "ai"
+      ? "AI Assistant"
+      : activePage === "notes"
+      ? "Notes"
+      : activePage === "quiz"
+      ? "Quiz"
+      : activePage === "progress"
+      ? "Progress"
+      : activePage === "books"
+      ? "Books"
+      : activePage === "profile"
+      ? "Profile"
+      : "Dashboard";
+
   return (
-    <div className="dashboard">
+    <DashboardLayout
+      activePage={activePageName}
+      onNavigate={(page) => {
+        const pageMap = {
+          Dashboard: "dashboard",
+          "AI Assistant": "ai",
+          Notes: "notes",
+          Quiz: "quiz",
+          Progress: "progress",
+          Books: "books",
+          Profile: "profile",
+        };
 
-      <aside className="sidebar">
-
-        <div className="dashboard-logo">
-
-          <span className="logo-icon">
-            ◆
-          </span>
-
-          <span>
-            StudyGenie <b>AI</b>
-          </span>
-
-        </div>
-
-        <nav className="menu">
-
-          <button
-            type="button"
-            className={
-              activePage === "dashboard"
-                ? "active"
-                : ""
-            }
-            onClick={() => navigate("dashboard")}
-          >
-            <span>⌂</span>
-            Dashboard
-          </button>
-
-          <button
-            type="button"
-            className={
-              activePage === "ai"
-                ? "active"
-                : ""
-            }
-            onClick={() => navigate("ai")}
-          >
-            <span>✧</span>
-            AI Assistant
-          </button>
-
-          <button
-            type="button"
-            className={
-              activePage === "notes"
-                ? "active"
-                : ""
-            }
-            onClick={() => navigate("notes")}
-          >
-            <span>▤</span>
-            Notes
-          </button>
-
-          <button
-            type="button"
-            className={
-              activePage === "quiz"
-                ? "active"
-                : ""
-            }
-            onClick={() => navigate("quiz")}
-          >
-            <span>□</span>
-            Quiz
-          </button>
-
-          <button
-            type="button"
-            className={
-              activePage === "progress"
-                ? "active"
-                : ""
-            }
-            onClick={() => navigate("progress")}
-          >
-            <span>⌁</span>
-            Progress
-          </button>
-
-          <button
-            type="button"
-            className={
-              activePage === "books"
-                ? "active"
-                : ""
-            }
-            onClick={() => navigate("books")}
-          >
-            <span>▥</span>
-            Books
-          </button>
-
-          <button
-            type="button"
-            className={
-              activePage === "profile"
-                ? "active"
-                : ""
-            }
-            onClick={() => navigate("profile")}
-          >
-            <span>♙</span>
-            Profile
-          </button>
-
-        </nav>
-
-        <button
-          type="button"
-          className="logout-btn"
-          onClick={onLogout}
-        >
-          <span>↪</span>
-          Logout
-        </button>
-
-      </aside>
-
-      <main className="dashboard-main">
-
-        <header className="dashboard-header">
-
-          <div className="search-box">
-
-            <span>⌕</span>
-
-            <input
-              type="text"
-              placeholder="Search anything..."
-            />
-
-          </div>
-
-          <div
-            className="profile"
-            onClick={() => navigate("profile")}
-          >
-
-            <div className="profile-photo">
-
-              {photo ? (
-                <img
-                  src={photo}
-                  alt="Profile"
-                />
-              ) : (
-                <span>👤</span>
-              )}
-
-            </div>
-
-            <div className="profile-text">
-
-              <strong>
-                Hi, {profile.name}
-              </strong>
-
-              <small>
-                {profile.learningMode}
-              </small>
-
-            </div>
-
-            <span className="profile-dot">
-              ●
-            </span>
-
-          </div>
-
-        </header>
-
-        {renderPageContent()}
-
-      </main>
-
-    </div>
+        navigate(pageMap[page] || "dashboard");
+      }}
+      onLogout={onLogout}
+    >
+      {renderPageContent()}
+    </DashboardLayout>
   );
 }
 
