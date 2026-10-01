@@ -19,7 +19,8 @@
 /* Page heading */
 
 .profile-page-heading {
-  margin-bottom: 26px;
+  display: block;
+  margin-bottom: 24px;
 }
 
 .profile-page-heading > div {
@@ -37,53 +38,53 @@
 
 .profile-page-heading h1 {
   margin: 0;
-  font-size: 31px;
+  font-size: 20px;
   line-height: 1.15;
   font-weight: 800;
   color: #17213f;
 }
 
 .profile-page-heading p {
-  margin: 7px 0 0;
+  margin: 5px 0 0;
   color: #7d879c;
-  font-size: 13px;
+  font-size: 10px;
 }
 
 /* Profile card */
 
 .profile-card {
   width: 100%;
-  min-height: 155px;
-  padding: 22px 26px;
+  min-height: 120px;
+  padding: 14px 20px;
   background: #ffffff;
   border: 1px solid #e2e5ed;
   border-radius: 16px;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 18px;
   box-shadow: 0 5px 18px rgba(30, 35, 70, 0.035);
 }
 
 /* Photo */
 
 .photo-area {
-  width: 130px;
+  width: 105px;
   flex-shrink: 0;
   text-align: center;
 }
 
 .profile-avatar {
-  width: 88px;
-  height: 88px;
-  margin: 0 auto 7px;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 5px;
   border-radius: 50%;
   overflow: hidden;
   background: #eeebff;
-  border: 3px solid #e8e4ff;
+  border: 2px solid #e8e4ff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 20px;
 }
 
 .profile-avatar img {
@@ -119,43 +120,43 @@
 /* Profile info */
 
 .profile-info {
-  flex: 1;
+  flex: 0 0 300px;
   min-width: 0;
 }
 
 .member-label {
   display: inline-block;
-  margin-bottom: 5px;
-  padding: 5px 9px;
+  margin-bottom: 2px;
+  padding: 6px 8px;
   border-radius: 7px;
   background: #eeebff;
   color: #5b4ce5;
-  font-size: 9px;
+  font-size: 7px;
   font-weight: 800;
   letter-spacing: 0.8px;
 }
 
 .profile-info h2 {
   margin: 0;
-  font-size: 25px;
+  font-size: 15px;
   line-height: 1.2;
   font-weight: 800;
   color: #17213f;
 }
 
 .profile-info p {
-  margin: 4px 0 8px;
+  margin: 3px 0 6px;
   color: #7d879c;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .learning-badge {
   display: inline-block;
-  padding: 6px 9px;
+  padding: 5px 8px;
   border-radius: 7px;
   background: #eeebff;
   color: #5749e5;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
 }
 
@@ -186,12 +187,13 @@
 
 .edit-profile-btn {
   flex-shrink: 0;
+  margin-left: 0;
   border: 0;
-  padding: 10px 17px;
+  padding: 10px 12px;
   border-radius: 8px;
   background: linear-gradient(135deg, #6256ed, #4d40d7);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -207,24 +209,28 @@
 }
 
 .section-heading {
+  display: block;
+  width: 100%;
+  text-align: left;
   margin-bottom: 12px;
 }
 
 .section-heading span {
   display: block;
   color: #5b4ce5;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
   letter-spacing: 2px;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .section-heading h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1.2;
   font-weight: 800;
   color: #17213f;
+  text-align: left;
 }
 
 /* Preferences */
@@ -237,7 +243,7 @@
 
 .preference-card {
   width: 100%;
-  min-height: 92px;
+  min-height: 88px;
   padding: 17px 18px;
   border: 1px solid #e1e4ec;
   border-radius: 13px;
@@ -278,14 +284,14 @@
 
 .preference-info strong {
   display: block;
-  font-size: 14px;
+  font-size: 12px;
   color: #17213f;
 }
 
 .preference-info p {
   margin: 4px 0 0;
   color: #7d879c;
-  font-size: 11px;
+  font-size: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -341,7 +347,7 @@
 
 .account-action strong {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   color: #17213f;
 }
 
@@ -411,7 +417,11 @@
   }
 
   .profile-card {
-    padding: 20px;
+    padding: 14px;
+  }
+
+  .profile-info {
+    flex: 1 1 auto;
   }
 
   .preferences-grid {
@@ -425,6 +435,7 @@
   }
 
   .profile-card {
+    width: 100%;
     flex-direction: column;
     align-items: flex-start;
   }
@@ -435,6 +446,7 @@
 
   .profile-info {
     width: 100%;
+    flex: none;
   }
 
   .edit-profile-btn {
@@ -444,69 +456,4 @@
   .profile-page-heading h1 {
     font-size: 26px;
   }
-}
-.profile-page-heading {
-  display: block;
-  margin-bottom: 24px;
-}
-
-.profile-page-heading h1 {
-  font-size: 27px;
-  line-height: 1.15;
-  margin: 0;
-}
-
-.profile-page-heading p {
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-.profile-info h2 {
-  font-size: 23px;
-  line-height: 1.2;
-  margin: 0;
-}
-
-.member-label {
-  font-size: 8px;
-  padding: 4px 8px;
-}
-
-.section-heading {
-  display: block;
-  width: 100%;
-  text-align: left;
-  margin-bottom: 12px;
-}
-
-.section-heading span {
-  font-size: 9px;
-  margin-bottom: 3px;
-}
-
-.section-heading h2 {
-  font-size: 20px;
-  line-height: 1.2;
-  margin: 0;
-  text-align: left;
-}
-
-.preference-card {
-  min-height: 88px;
-}
-
-.preference-info strong {
-  font-size: 13px;
-}
-
-.preference-info p {
-  font-size: 10px;
-}
-
-.account-action strong {
-  font-size: 13px;
-}
-
-.account-action small {
-  font-size: 10px;
 }
