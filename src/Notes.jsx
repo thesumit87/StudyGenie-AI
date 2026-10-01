@@ -1,592 +1,296 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./Notes.css";
 
+const STORAGE_KEY = "studygenieNotes";
+const DEFAULT_NOTES = [
+  {
+    id: 1,
+    title: "Computer Networks Basics",
+    subject: "Computer Networks",
+    content:
+      "Computer Network is a group of interconnected computers and devices that communicate and share data and resources. Main components of a computer network include routers, switches and communication protocols.",
+  },
+  {
+    id: 2,
+    title: "Java OOP Concepts",
+    subject: "Java",
+    content:
+      "OOP is based on classes and objects. Main concepts are Encapsulation, Inheritance, Polymorphism and Abstraction.",
+  },
+  {
+    id: 3,
+    title: "Operating System",
+    subject: "Operating System",
+    content:
+      "An Operating System manages computer hardware and provides services for applications. It manages memory, processes, files and devices.",
+  },
+];
+
+const SUBJECTS = [
+  "Computer Networks",
+  "Java",
+  "Operating System",
+  "DBMS",
+  "DSA",
+  "Web Development",
+];
+
+function readStoredNotes() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === null) return DEFAULT_NOTES;
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : DEFAULT_NOTES;
+  } catch {
+    return DEFAULT_NOTES;
+  }
+}
+
+function subjectIcon(subject) {
+  const icons = {
+    "Computer Networks": "🌐",
+    Java: "☕",
+    "Operating System": "💻",
+    DBMS: "▤",
+    DSA: "⌘",
+    "Web Development": "</>",
+  };
+  return icons[subject] || "📘";
+}
+
+function formatDate(value) {
+  if (!value) return "Study note";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Study note";
+  return `Edited ${date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  })}`;
+}
+
 function Notes() {
-  const [notes, setNotes] = useState(() => {
-    const savedNotes = localStorage.getItem("studygenieNotes");
-
-    if (savedNotes) {
-      try {
-        return JSON.parse(savedNotes);
-      } catch {
-        return [];
-      }
-    }
-
-    return [
-      {
-        id: 1,
-        title: "Computer Networks Basics",
-        subject: "Computer Networks",
-        content:
-          "Computer Network is a group of interconnected computers and devices that communicate and share data and resources. Main components of a computer network include routers, switches and communication protocols.",
-      },
-      {
-        id: 2,
-        title: "Java OOP Concepts",
-        subject: "Java",
-        content:
-          "OOP is based on classes and objects. Main concepts are Encapsulation, Inheritance, Polymorphism and Abstraction.",
-      },
-      {
-        id: 3,
-        title: "Operating System",
-        subject: "Operating System",
-        content:
-          "An Operating System manages computer hardware and provides services for applications. It manages memory, processes, files and devices.",
-      },
-    ];
-  });
-
+  const [notes, setNotes] = useState(readStoredNotes);
   const [search, setSearch] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All");
-  const [showForm, setShowForm] = useState(false);
-  const [selectedNote, setSelectedNote] = useState(null);
+  const [activeId, setActiveId] = useState(null);
+  const [draft, setDraft] = useState(null);
 
-  const [title, setTitle] = useState("");
-  const [subject, setSubject] = useState("");
-  const [content, setContent] = useState("");
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    window.dispatchEvent(new Event("studygenie-update"));
+  }, [notes]);
 
-  const subjects = [
-    "All",
-    "Computer Networks",
-    "Java",
-    "Operating System",
-    "DBMS",
-    "DSA",
-    "Web Development",
-  ];
+  const subjects = useMemo(
+    () => ["All", ...new Set([...SUBJECTS, ...notes.map((note) => note.subject).filter(Boolean)])],
+    [notes]
+  );
 
-  const saveNotes = (updatedNotes) => {
-    setNotes(updatedNotes);
+  const filteredNotes = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return notes.filter((note) => {
+      const matchesSubject = selectedSubject === "All" || note.subject === selectedSubject;
+      const matchesSearch = `${note.title} ${note.subject} ${note.content}`
+        .toLowerCase()
+        .includes(query);
+      return matchesSubject && matchesSearch;
+    });
+  }, [notes, search, selectedSubject]);
 
-    localStorage.setItem(
-      "studygenieNotes",
-      JSON.stringify(updatedNotes)
+  const activeNote = notes.find((note) => note.id === activeId);
+  const editor = draft || (activeNote ? { ...activeNote } : null);
+
+  function openNewNote() {
+    setActiveId(null);
+    setDraft({ id: null, title: "", subject: "", content: "" });
+  }
+
+  function openNote(note) {
+    setActiveId(note.id);
+    setDraft(null);
+  }
+
+  function closeEditor() {
+    setActiveId(null);
+    setDraft(null);
+  }
+
+  function updateEditor(field, value) {
+    if (draft) {
+      setDraft((current) => ({ ...current, [field]: value }));
+      return;
+    }
+    setNotes((current) =>
+      current.map((note) =>
+        note.id === activeId
+          ? { ...note, [field]: value, updatedAt: new Date().toISOString() }
+          : note
+      )
     );
+  }
 
-    window.dispatchEvent(
-      new Event("studygenie-update")
-    );
-  };
+  function saveNote(event) {
+    event.preventDefault();
+    if (!editor?.title.trim() || !editor?.subject.trim() || !editor?.content.trim()) return;
 
-  const addNote = (e) => {
-    e.preventDefault();
-
-    if (
-      !title.trim() ||
-      !subject.trim() ||
-      !content.trim()
-    ) {
+    if (draft) {
+      const created = {
+        ...draft,
+        id: Date.now(),
+        title: draft.title.trim(),
+        subject: draft.subject.trim(),
+        content: draft.content.trim(),
+        updatedAt: new Date().toISOString(),
+      };
+      setNotes((current) => [created, ...current]);
+      setActiveId(created.id);
+      setDraft(null);
       return;
     }
 
-    const newNote = {
-      id: Date.now(),
-      title: title.trim(),
-      subject: subject.trim(),
-      content: content.trim(),
-    };
-
-    saveNotes([newNote, ...notes]);
-
-    setTitle("");
-    setSubject("");
-    setContent("");
-    setShowForm(false);
-  };
-
-  const deleteNote = (id) => {
-    const updatedNotes = notes.filter(
-      (note) => note.id !== id
+    setNotes((current) =>
+      current.map((note) =>
+        note.id === activeId
+          ? { ...note, title: editor.title.trim(), subject: editor.subject.trim(), content: editor.content.trim(), updatedAt: new Date().toISOString() }
+          : note
+      )
     );
+  }
 
-    saveNotes(updatedNotes);
-
-    if (selectedNote?.id === id) {
-      setSelectedNote(null);
-    }
-  };
-
-  const filteredNotes = notes.filter((note) => {
-    const matchesSubject =
-      selectedSubject === "All" ||
-      note.subject === selectedSubject;
-
-    const searchText =
-      `${note.title} ${note.subject} ${note.content}`.toLowerCase();
-
-    const matchesSearch =
-      searchText.includes(search.toLowerCase());
-
-    return matchesSubject && matchesSearch;
-  });
-
-  const getSubjectIcon = (subjectName) => {
-    if (subjectName === "Computer Networks") {
-      return "🌐";
-    }
-
-    if (subjectName === "Java") {
-      return "☕";
-    }
-
-    if (subjectName === "Operating System") {
-      return "💻";
-    }
-
-    if (subjectName === "DBMS") {
-      return "🗄️";
-    }
-
-    if (subjectName === "DSA") {
-      return "⌘";
-    }
-
-    if (subjectName === "Web Development") {
-      return "</>";
-    }
-
-    return "📘";
-  };
-
-  const getSubjectClass = (subjectName) => {
-    if (subjectName === "Computer Networks") {
-      return "network";
-    }
-
-    if (subjectName === "Java") {
-      return "java";
-    }
-
-    if (subjectName === "Operating System") {
-      return "os";
-    }
-
-    if (subjectName === "DBMS") {
-      return "dbms";
-    }
-
-    if (subjectName === "DSA") {
-      return "dsa";
-    }
-
-    if (subjectName === "Web Development") {
-      return "web";
-    }
-
-    return "default";
-  };
+  function deleteNote(id) {
+    setNotes((current) => current.filter((note) => note.id !== id));
+    if (activeId === id) closeEditor();
+  }
 
   return (
-    <section className="notes-content">
-
-      <div className="notes-hero">
-
-        <div className="notes-hero-text">
-
-          <div className="notes-label">
-            STUDY MATERIAL
-          </div>
-
-          <h1>
-            My <span>Notes</span>
-          </h1>
-
-          <p>
-            Create, organize and manage your study notes
-            in one place.
-          </p>
-
+    <section className="notes-page">
+      <header className="notes-page-heading">
+        <div>
+          <span className="notes-eyebrow">YOUR STUDY SPACE</span>
+          <h1>My <span>Notes</span></h1>
+          <p>Keep your ideas and study material in one calm, organized space.</p>
         </div>
-
-        <div className="notes-illustration">
-
-          <div className="book-stack">
-
-            <div className="book book-blue">
-              📘
-            </div>
-
-            <div className="book book-purple">
-              📕
-            </div>
-
-            <div className="book book-orange">
-              📙
-            </div>
-
-          </div>
-
-          <div className="future-text">
-            Better
-            <br />
-            Notes
-            <br />
-            <b>Brighter Future</b>
-          </div>
-
-        </div>
-
-        <button
-          type="button"
-          className="add-note-btn"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? "✕ Close" : "+ Add Note"}
-        </button>
-
-      </div>
-
-      <div className="subject-filters">
-
-        {subjects.map((item) => (
-          <button
-            key={item}
-            type="button"
-            className={
-              selectedSubject === item
-                ? "subject-filter active"
-                : "subject-filter"
-            }
-            onClick={() =>
-              setSelectedSubject(item)
-            }
-          >
-            <span>
-              {item === "All"
-                ? "▦"
-                : getSubjectIcon(item)}
-            </span>
-
-            {item}
+        {!editor && (
+          <button className="notes-primary-button" type="button" onClick={openNewNote}>
+            <span aria-hidden="true">＋</span> New note
           </button>
-        ))}
-
-      </div>
-
-      {showForm && (
-        <form
-          className="note-form"
-          onSubmit={addNote}
-        >
-
-          <div className="form-title">
-            <h2>Create New Note</h2>
-            <p>
-              Add your study material below.
-            </p>
-          </div>
-
-          <div className="form-row">
-
-            <input
-              type="text"
-              placeholder="Note title"
-              value={title}
-              onChange={(e) =>
-                setTitle(e.target.value)
-              }
-              required
-            />
-
-            <input
-              type="text"
-              placeholder="Subject"
-              value={subject}
-              onChange={(e) =>
-                setSubject(e.target.value)
-              }
-              required
-            />
-
-          </div>
-
-          <textarea
-            placeholder="Write your notes here..."
-            value={content}
-            onChange={(e) =>
-              setContent(e.target.value)
-            }
-            rows="5"
-            required
-          />
-
-          <div className="form-buttons">
-
-            <button
-              type="submit"
-              className="save-note-btn"
-            >
-              Save Note
-            </button>
-
-            <button
-              type="button"
-              className="cancel-note-btn"
-              onClick={() =>
-                setShowForm(false)
-              }
-            >
-              Cancel
-            </button>
-
-          </div>
-
-        </form>
-      )}
-
-      <div className="notes-tools">
-
-        <div className="notes-search">
-
-          <span>⌕</span>
-
-          <input
-            type="text"
-            placeholder="Search your notes..."
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-          />
-
-        </div>
-
-        <div className="notes-tools-right">
-
-          <button
-            type="button"
-            className="sort-btn"
-          >
-            ↕ Newest First
-            <span>⌄</span>
-          </button>
-
-          <div className="view-buttons">
-
-            <button
-              type="button"
-              className="view-active"
-            >
-              ▦
-            </button>
-
-            <button type="button">
-              ☷
-            </button>
-
-          </div>
-
-          <span className="note-total">
-            {filteredNotes.length} Notes
-          </span>
-
-        </div>
-
-      </div>
-
-      <div className="notes-grid">
-
-        {filteredNotes.length > 0 ? (
-          filteredNotes.map((note) => {
-
-            const subjectClass =
-              getSubjectClass(note.subject);
-
-            return (
-              <article
-                className={`note-card ${subjectClass}`}
-                key={note.id}
-              >
-
-                <div className="note-card-top">
-
-                  <div
-                    className={`note-icon ${subjectClass}`}
-                  >
-                    {getSubjectIcon(note.subject)}
-                  </div>
-
-                  <span
-                    className={`note-subject ${subjectClass}`}
-                  >
-                    {note.subject}
-                  </span>
-
-                  <button
-                    type="button"
-                    className="delete-note"
-                    onClick={() =>
-                      deleteNote(note.id)
-                    }
-                    title="Delete note"
-                  >
-                    ⋮
-                  </button>
-
-                </div>
-
-                <h3>
-                  {note.title}
-                </h3>
-
-                <p className="note-preview">
-                  {note.content.length > 155
-                    ? `${note.content.substring(
-                        0,
-                        155
-                      )}...`
-                    : note.content}
-                </p>
-
-                <div className="note-card-bottom">
-
-                  <span className="note-date">
-                    ◫ Study Note
-                  </span>
-
-                  <button
-                    type="button"
-                    className="open-note-btn"
-                    onClick={() =>
-                      setSelectedNote(note)
-                    }
-                  >
-                    Read Note →
-                  </button>
-
-                </div>
-
-              </article>
-            );
-          })
-        ) : (
-          <div className="no-notes">
-
-            <div className="empty-note-icon">
-              🔍
-            </div>
-
-            <h3>
-              No notes found
-            </h3>
-
-            <p>
-              Try another subject or search term.
-            </p>
-
-          </div>
         )}
+      </header>
 
-      </div>
+      <div className={`notes-workspace${editor ? " is-editing" : ""}`}>
+        <aside className="notes-sidebar" aria-label="Notes library">
+          <div className="notes-sidebar-top">
+            <div>
+              <h2>My library</h2>
+              <span>{filteredNotes.length} {filteredNotes.length === 1 ? "note" : "notes"}</span>
+            </div>
+            <button className="notes-new-icon" type="button" onClick={openNewNote} aria-label="Create a new note">＋</button>
+          </div>
 
-      <div className="notes-reminder">
+          <label className="notes-search">
+            <span aria-hidden="true">⌕</span>
+            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search notes" />
+            {search && <button type="button" onClick={() => setSearch("")} aria-label="Clear search">×</button>}
+          </label>
 
-        <div className="reminder-icon">
-          ✦
-        </div>
+          <div className="notes-filter-label">SUBJECTS</div>
+          <nav className="notes-subject-filters" aria-label="Filter by subject">
+            {subjects.map((subject) => (
+              <button
+                className={selectedSubject === subject ? "active" : ""}
+                key={subject}
+                type="button"
+                onClick={() => setSelectedSubject(subject)}
+              >
+                <span className="subject-filter-icon">{subject === "All" ? "▦" : subjectIcon(subject)}</span>
+                <span>{subject}</span>
+                {subject === "All" && <small>{notes.length}</small>}
+              </button>
+            ))}
+          </nav>
 
-        <div className="reminder-text">
+          <div className="notes-list-heading">RECENT NOTES</div>
+          <div className="notes-list">
+            {filteredNotes.length ? filteredNotes.map((note) => (
+              <button
+                className={`notes-list-item${activeId === note.id ? " selected" : ""}`}
+                key={note.id}
+                type="button"
+                onClick={() => openNote(note)}
+              >
+                <span className="notes-list-item-icon">{subjectIcon(note.subject)}</span>
+                <span className="notes-list-item-copy">
+                  <strong>{note.title || "Untitled note"}</strong>
+                  <small>{note.subject || "No subject"} <i>·</i> {formatDate(note.updatedAt)}</small>
+                </span>
+                <span className="notes-list-chevron" aria-hidden="true">›</span>
+              </button>
+            )) : (
+              <div className="notes-list-empty">No notes match your search.</div>
+            )}
+          </div>
+        </aside>
 
-          <h3>
-            Keep your notes organized!
-          </h3>
-
-          <p>
-            Well-organized notes help you revise faster
-            and remember better.
-          </p>
-
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setShowForm(true)}
-        >
-          Create a new note →
-        </button>
-
-      </div>
-
-      {selectedNote && (
-        <div
-          className="note-viewer-overlay"
-          onClick={() =>
-            setSelectedNote(null)
-          }
-        >
-
-          <div
-            className="note-viewer"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
-          >
-
-            <div className="note-viewer-header">
-
-              <div className="viewer-title">
-
-                <div className="viewer-icon">
-                  {getSubjectIcon(
-                    selectedNote.subject
-                  )}
+        <main className="notes-editor-panel">
+          {editor ? (
+            <form className="note-editor" onSubmit={saveNote}>
+              <div className="editor-topbar">
+                <button className="editor-back-button" type="button" onClick={closeEditor}>
+                  <span aria-hidden="true">←</span> All notes
+                </button>
+                <div className="editor-actions">
+                  {!draft && <button className="editor-delete-button" type="button" onClick={() => deleteNote(activeId)}>Delete</button>}
+                  <button className="notes-primary-button editor-save-button" type="submit">{draft ? "Save note" : "Save changes"}</button>
                 </div>
-
-                <div>
-                  <h2>
-                    {selectedNote.title}
-                  </h2>
-
-                  <span
-                    className={`note-subject ${getSubjectClass(
-                      selectedNote.subject
-                    )}`}
-                  >
-                    {selectedNote.subject}
-                  </span>
-                </div>
-
               </div>
 
-              <button
-                type="button"
-                className="close-viewer"
-                onClick={() =>
-                  setSelectedNote(null)
-                }
-              >
-                ✕
-              </button>
-
+              <div className="editor-document">
+                <div className="editor-subject-row">
+                  <span className="editor-subject-icon">{subjectIcon(editor.subject)}</span>
+                  <input
+                    className="editor-subject-input"
+                    list="notes-subject-options"
+                    value={editor.subject}
+                    onChange={(event) => updateEditor("subject", event.target.value)}
+                    placeholder="Choose or type a subject"
+                    aria-label="Subject"
+                    required
+                  />
+                  <datalist id="notes-subject-options">{subjects.filter((item) => item !== "All").map((item) => <option key={item} value={item} />)}</datalist>
+                </div>
+                <input
+                  className="editor-title-input"
+                  value={editor.title}
+                  onChange={(event) => updateEditor("title", event.target.value)}
+                  placeholder="Untitled note"
+                  aria-label="Note title"
+                  required
+                />
+                <div className="editor-meta">{draft ? "A new page, ready for your ideas" : formatDate(activeNote?.updatedAt)}</div>
+                <div className="editor-divider" />
+                <div className="editor-writing-label">YOUR NOTES</div>
+                <textarea
+                  className="editor-content-input"
+                  value={editor.content}
+                  onChange={(event) => updateEditor("content", event.target.value)}
+                  placeholder="Start writing here…\n\nAdd key ideas, definitions, questions, or anything you want to remember."
+                  aria-label="Note content"
+                  required
+                />
+                <div className="editor-footer-hint">Your notes are saved on this device.</div>
+              </div>
+            </form>
+          ) : (
+            <div className="notes-welcome">
+              <div className="welcome-icon" aria-hidden="true">✎</div>
+              <span className="notes-eyebrow">A CLEARER WAY TO STUDY</span>
+              <h2>Your notes, <span>in focus.</span></h2>
+              <p>Select a note from your library to read and edit it, or start a fresh page for a new idea.</p>
+              <button className="notes-primary-button" type="button" onClick={openNewNote}>＋ Create a note</button>
+              <div className="welcome-note-count">{notes.length} {notes.length === 1 ? "note" : "notes"} in your library</div>
             </div>
-
-            <div className="note-viewer-content">
-              <p>
-                {selectedNote.content}
-              </p>
-            </div>
-
-            <div className="note-viewer-footer">
-
-              <button
-                type="button"
-                className="close-note-btn"
-                onClick={() =>
-                  setSelectedNote(null)
-                }
-              >
-                Close
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-      )}
-
+          )}
+        </main>
+      </div>
     </section>
   );
 }
