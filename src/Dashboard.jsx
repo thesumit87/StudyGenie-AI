@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import "./Dashboard.css";
 
-import DashboardLayout from "./DashboardLayout";
 import AIAssistant from "./AIAssistant";
+import Books from "./Books";
+import DashboardLayout from "./DashboardLayout";
 import Notes from "./Notes";
 import Profile from "./Profile";
 import Progress from "./Progress";
@@ -244,29 +245,7 @@ function Dashboard({ onLogout }) {
     }
 
     if (activePage === "books") {
-      return (
-        <section className="dashboard-content">
-          <div className="welcome-section">
-            <div>
-              <h1>Books</h1>
-
-              <p>
-                Your study books and learning resources.
-              </p>
-            </div>
-          </div>
-
-          <div className="empty-activity">
-            <span>📚</span>
-
-            <strong>Books Coming Soon</strong>
-
-            <p>
-              StudyGenie books section will be available soon.
-            </p>
-          </div>
-        </section>
-      );
+      return <Books />;
     }
 
     return (
