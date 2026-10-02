@@ -25,6 +25,16 @@ function DashboardLayout({
     }
   };
 
+  let profile = {};
+
+  try {
+    profile = JSON.parse(
+      localStorage.getItem("studygenieProfile") || '{"name":"Student"}'
+    );
+  } catch {
+    profile = { name: "Student" };
+  }
+
   return (
     <div
       className={`dashboard-layout ${
@@ -32,11 +42,23 @@ function DashboardLayout({
       }`}
     >
       <aside className="dashboard-sidebar">
-        <div className="sidebar-logo">
-          <div className="logo-mark">◆</div>
-          <span>
-            StudyGenie <b>AI</b>
-          </span>
+        <div className="sidebar-header">
+          <button
+            className="sidebar-menu-btn"
+            onClick={() => setSidebarOpen((prev) => !prev)}
+            aria-label="Toggle sidebar"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <div className="sidebar-brand">
+            <div className="brand-icon">✦</div>
+            <span>
+              StudyGenie <b>AI</b>
+            </span>
+          </div>
         </div>
 
         <nav className="sidebar-menu">
@@ -49,49 +71,23 @@ function DashboardLayout({
               onClick={() => handleNavigate(item.name)}
               title={item.name}
             >
-              <span className="sidebar-icon">
-                {item.icon}
-              </span>
-
-              <span className="sidebar-text">
-                {item.name}
-              </span>
+              <span className="sidebar-icon">{item.icon}</span>
+              <span className="sidebar-text">{item.name}</span>
             </button>
           ))}
         </nav>
 
-        <button
-          className="sidebar-logout"
-          onClick={onLogout}
-        >
-          <span>↪</span>
+        <button className="sidebar-logout" onClick={onLogout}>
+          <span className="sidebar-icon">↪</span>
           <span className="sidebar-text">Logout</span>
         </button>
       </aside>
 
       <div className="dashboard-main">
-
         <header className="dashboard-topbar">
-          <div className="topbar-left">
-            <button
-              className="hamburger-btn"
-              onClick={() =>
-                setSidebarOpen((prev) => !prev)
-              }
-              aria-label="Toggle sidebar"
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-
-            <div className="topbar-search">
-              <span>⌕</span>
-              <input
-                type="text"
-                placeholder="Search anything..."
-              />
-            </div>
+          <div className="topbar-search">
+            <span>⌕</span>
+            <input type="text" placeholder="Search anything..." />
           </div>
 
           <div className="topbar-profile">
@@ -106,22 +102,13 @@ function DashboardLayout({
               }}
             />
 
-            <strong>
-              Hi,{" "}
-              {JSON.parse(
-                localStorage.getItem("studygenieProfile") ||
-                  '{"name":"Student"}'
-              ).name || "Student"}
-            </strong>
+            <strong>Hi, {profile.name || "Student"}</strong>
 
             <span className="online-dot"></span>
           </div>
         </header>
 
-        <main className="dashboard-page">
-          {children}
-        </main>
-
+        <main className="dashboard-page">{children}</main>
       </div>
     </div>
   );
