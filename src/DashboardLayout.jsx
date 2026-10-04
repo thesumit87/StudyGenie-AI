@@ -23,6 +23,11 @@ function DashboardLayout({
     if (onNavigate) {
       onNavigate(page);
     }
+
+    // Close sidebar on mobile after selecting a page
+    if (window.innerWidth <= 768) {
+      setSidebarOpen(false);
+    }
   };
 
   let profile = {};
@@ -41,6 +46,14 @@ function DashboardLayout({
         sidebarOpen ? "sidebar-open" : "sidebar-closed"
       }`}
     >
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="mobile-sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
       <aside className="dashboard-sidebar">
         <div className="sidebar-header">
           <button
@@ -85,6 +98,17 @@ function DashboardLayout({
 
       <div className="dashboard-main">
         <header className="dashboard-topbar">
+          {/* Mobile menu button */}
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setSidebarOpen((prev) => !prev)}
+            aria-label="Open menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
           <div className="topbar-search">
             <span>⌕</span>
             <input type="text" placeholder="Search anything..." />
