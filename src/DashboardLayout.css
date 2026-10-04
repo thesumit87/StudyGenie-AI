@@ -524,16 +524,13 @@
     padding-bottom: 80px;
   }
 }
-@media (max-width: 280px) {
+@media (max-width: 768px) {
   .dashboard-sidebar {
-    width: 65vw;
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    z-index: 1000;
+    width: 60px;
   }
 
   .sidebar-open .dashboard-sidebar {
-    transform: translateX(0);
+    width: 260px;
   }
 
   .sidebar-closed .dashboard-sidebar {
