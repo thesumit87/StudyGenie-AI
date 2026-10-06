@@ -129,8 +129,7 @@ const BOOKS = [
     tags: ["DSA", "Programming"],
     rating: "4.8",
     reviews: "2.1k",
-    search:
-      "https://www.google.com/search?q=Data+Structures+and+Algorithms+Mark+Allen+Weiss",
+    search: "/books/DSA_Notes.pdf",
   },
   {
     id: 2,
@@ -143,8 +142,7 @@ const BOOKS = [
     tags: ["Operating System"],
     rating: "4.7",
     reviews: "1.5k",
-    search:
-      "https://www.google.com/search?q=Operating+System+Concepts+Silberschatz",
+    search: "/books/Operating_System_Notes.pdf",
   },
   {
     id: 3,
@@ -157,8 +155,7 @@ const BOOKS = [
     tags: ["DBMS"],
     rating: "4.6",
     reviews: "1.3k",
-    search:
-      "https://www.google.com/search?q=Database+System+Concepts+Silberschatz+Korth",
+    search: "https://openlibrary.org/isbn/9780078022159",
   },
   {
     id: 4,
@@ -171,8 +168,7 @@ const BOOKS = [
     tags: ["Computer Networks"],
     rating: "4.6",
     reviews: "1.2k",
-    search:
-      "https://www.google.com/search?q=Computer+Networks+Andrew+Tanenbaum",
+    search: "/books/Computer_Networks_Notes.pdf",
   },
   {
     id: 5,
@@ -185,8 +181,7 @@ const BOOKS = [
     tags: ["Java", "Programming"],
     rating: "4.7",
     reviews: "980",
-    search:
-      "https://www.google.com/search?q=Java+The+Complete+Reference+Herbert+Schildt",
+    search: "https://openlibrary.org/isbn/9781260440218",
   },
   {
     id: 6,
@@ -199,7 +194,7 @@ const BOOKS = [
     tags: ["HTML", "CSS"],
     rating: "4.8",
     reviews: "1.8k",
-    search: "https://www.google.com/search?q=HTML+and+CSS+Jon+Duckett",
+    search: "https://openlibrary.org/isbn/9781118008188",
   },
   {
     id: 7,
@@ -212,9 +207,9 @@ const BOOKS = [
     tags: ["JavaScript"],
     rating: "4.7",
     reviews: "1.1k",
-    search:
-      "https://www.google.com/search?q=JavaScript+The+Definitive+Guide+David+Flanagan",
+    search: "https://www.oreilly.com/library/view/javascript-the-definitive/9781491952016/",
   },
+
   {
     id: 8,
     title: "Quantitative Aptitude",
@@ -226,8 +221,7 @@ const BOOKS = [
     tags: ["Aptitude", "Placement"],
     rating: "4.5",
     reviews: "2.4k",
-    search:
-      "https://www.google.com/search?q=Quantitative+Aptitude+RS+Aggarwal",
+    search: "https://openlibrary.org/isbn/9789352606760",
   },
 ];
 
