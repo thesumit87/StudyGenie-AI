@@ -18,6 +18,16 @@ function App() {
   const [showProgress, setShowProgress] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(
+        localStorage.getItem("studygenieProfile") || "null"
+      );
+    } catch {
+      return null;
+    }
+  });
+
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({
       behavior: "smooth",
@@ -43,11 +53,16 @@ function App() {
   if (showProfile) {
     return (
       <Profile
+        user={user}
         onBack={() => setShowProfile(false)}
         onLogout={() => {
           setShowProfile(false);
           setShowDashboard(false);
           setShowLogin(false);
+          setUser(null);
+          localStorage.removeItem("studygenieProfile");
+          localStorage.removeItem("studygenie_email");
+          localStorage.removeItem("profilePhoto");
         }}
       />
     );
@@ -56,9 +71,14 @@ function App() {
   if (showDashboard) {
     return (
       <Dashboard
+        user={user}
         onLogout={() => {
           setShowDashboard(false);
           setShowLogin(false);
+          setUser(null);
+          localStorage.removeItem("studygenieProfile");
+          localStorage.removeItem("studygenie_email");
+          localStorage.removeItem("profilePhoto");
         }}
         onOpenAI={() => setShowAI(true)}
         onOpenNotes={() => setShowNotes(true)}
@@ -73,7 +93,31 @@ function App() {
     return (
       <Login
         onBack={() => setShowLogin(false)}
-        onLogin={() => {
+        onLogin={(googleUser) => {
+          if (googleUser) {
+            setUser(googleUser);
+
+            localStorage.setItem(
+              "studygenieProfile",
+              JSON.stringify({
+                name: googleUser.name || "Student",
+                email: googleUser.email || "",
+              })
+            );
+
+            localStorage.setItem(
+              "studygenie_email",
+              googleUser.email || ""
+            );
+
+            if (googleUser.photoURL) {
+              localStorage.setItem(
+                "profilePhoto",
+                googleUser.photoURL
+              );
+            }
+          }
+
           setShowLogin(false);
           setShowDashboard(true);
         }}
@@ -90,6 +134,7 @@ function App() {
 
         <div className="logo">
           <div className="logo-mark">◆</div>
+
           <span>
             StudyGenie <b>AI</b>
           </span>
@@ -180,8 +225,10 @@ function App() {
 
           <div className="floating-card ai-float">
             <div className="float-icon purple-icon">✦</div>
+
             <div>
               <strong>AI Assistant</strong>
+
               <div className="fake-lines">
                 <i></i>
                 <i></i>
@@ -191,8 +238,10 @@ function App() {
 
           <div className="floating-card notes-float">
             <div className="float-icon blue-icon">▤</div>
+
             <div>
               <strong>Notes</strong>
+
               <div className="fake-lines">
                 <i></i>
                 <i></i>
@@ -203,8 +252,10 @@ function App() {
 
           <div className="floating-card quiz-float">
             <div className="float-icon pink-icon">□</div>
+
             <div>
               <strong>Quiz</strong>
+
               <div className="fake-lines">
                 <i></i>
                 <i></i>
@@ -232,6 +283,7 @@ function App() {
               <div className="laptop-screen">
                 <span>•</span>
               </div>
+
               <div className="laptop-base"></div>
             </div>
 
@@ -244,6 +296,7 @@ function App() {
           </div>
 
           <div className="floating-card progress-float">
+
             <strong>Your Progress</strong>
 
             <div className="mini-chart">
@@ -252,7 +305,9 @@ function App() {
               <i></i>
               <i></i>
               <i></i>
+              <i></i>
             </div>
+
           </div>
 
           <div className="desk-line"></div>
@@ -302,7 +357,9 @@ function App() {
           WHAT WE OFFER
         </div>
 
-        <h2>Powerful Features for Smarter Learning</h2>
+        <h2>
+          Powerful Features for Smarter Learning
+        </h2>
 
         <p className="section-subtitle">
           Everything you need to study, organize and grow — in one place.
@@ -317,7 +374,9 @@ function App() {
             <div className="feature-icon purple">
               ✦
             </div>
+
             <h3>AI Assistant</h3>
+
             <p>
               Get instant answers to your doubts with your AI-powered study assistant.
             </p>
@@ -330,7 +389,9 @@ function App() {
             <div className="feature-icon blue">
               ▤
             </div>
+
             <h3>Smart Notes</h3>
+
             <p>
               Create, organize and manage your study notes easily.
             </p>
@@ -343,7 +404,9 @@ function App() {
             <div className="feature-icon green">
               ✓
             </div>
+
             <h3>Quizzes</h3>
+
             <p>
               Practice with AI generated quizzes to test your knowledge.
             </p>
@@ -356,7 +419,9 @@ function App() {
             <div className="feature-icon orange">
               ▥
             </div>
+
             <h3>Progress Tracking</h3>
+
             <p>
               Track your learning progress and stay consistent.
             </p>
@@ -369,7 +434,9 @@ function App() {
             <div className="feature-icon pink">
               ▮
             </div>
+
             <h3>Study Materials</h3>
+
             <p>
               Manage your study materials and resources in one place.
             </p>
@@ -382,7 +449,9 @@ function App() {
             <div className="feature-icon violet">
               ♙
             </div>
+
             <h3>User Profile</h3>
+
             <p>
               Keep your profile and learning preferences in one place.
             </p>
@@ -394,14 +463,20 @@ function App() {
           <strong>
             “Study smart, not hard with StudyGenie AI.”
           </strong>
-          <span>— Your Learning, Our Priority</span>
+
+          <span>
+            — Your Learning, Our Priority
+          </span>
         </div>
 
       </section>
 
       {/* About */}
 
-      <section className="about-section" id="about">
+      <section
+        className="about-section"
+        id="about"
+      >
 
         <div className="about-content">
 
